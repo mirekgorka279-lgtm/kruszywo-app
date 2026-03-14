@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Kruszywo PRO" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <title>Kalkulator Kruszywa PWA</title>
+  <style>
+    :root{--bg:#f8fafc;--card:#fff;--text:#0f172a;--muted:#64748b;--line:#dbe4ee;--accent:#0f172a;--soft:#eef2f7;--ok:#166534;--shadow:0 10px 30px rgba(15,23,42,.06);--radius:20px}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:linear-gradient(180deg,#f8fafc 0%,#eef2f7 100%);color:var(--text)}
+    .wrap{max-width:1240px;margin:0 auto;padding:16px}
+    .hero{background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);color:#fff;border-radius:28px;padding:22px;box-shadow:var(--shadow)}
+    .hero h1{margin:0;font-size:30px}.hero p{margin:8px 0 0;color:#cbd5e1;font-size:14px;line-height:1.45}
+    .badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:700}
+    .tabs{display:grid;grid-template-columns:repeat(9,1fr);gap:8px;margin:16px 0 18px}
+    .tab-btn{border:1px solid var(--line);background:#fff;color:var(--text);border-radius:16px;padding:12px 10px;font-weight:700;font-size:14px;cursor:pointer}
+    .tab-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .tab{display:none}.tab.active{display:block}
+    .layout{display:grid;grid-template-columns:1.65fr .95fr;gap:16px}.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+    .card h2,.card h3{margin:0 0 12px}.subtle{color:var(--muted);font-size:13px;line-height:1.45}
+    .form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.full{grid-column:1/-1}
+    label{display:block;font-size:13px;font-weight:800;margin-bottom:6px}
+    input,select,textarea{width:100%;border:1px solid var(--line);border-radius:14px;padding:12px 13px;font-size:16px;background:#fff;color:var(--text);outline:none}
+    textarea{min-height:96px;resize:vertical}
+    .btn-row{display:flex;flex-wrap:wrap;gap:10px}
+    button,.btn{border:none;background:var(--accent);color:#fff;border-radius:16px;padding:12px 16px;font-weight:800;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+    button.secondary,.btn.secondary{background:#fff;color:var(--text);border:1px solid var(--line)} button.ghost{background:var(--soft);color:var(--text)}
+    .metrics{display:grid;gap:12px}.metric{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:var(--shadow)}
+    .metric-ico{width:44px;height:44px;border-radius:14px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:900}
+    .metric .lbl{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}.metric .val{font-size:24px;font-weight:900;margin-top:3px}
+    .offer-box{min-height:320px}.list{display:grid;gap:12px}
+    .item-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}
+    .pill{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:800;background:var(--soft);color:var(--text);border:1px solid var(--line)}
+    .pill-a{background:#dcfce7;border-color:#bbf7d0;color:#166534}.pill-b{background:#fef3c7;border-color:#fde68a;color:#92400e}.pill-c{background:#e0f2fe;border-color:#bae6fd;color:#0369a1}
+    .ok{color:var(--ok);font-weight:800}.kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.col{background:#f8fafc;border:1px dashed var(--line);border-radius:18px;padding:12px}
+    .col h3{font-size:15px;margin-bottom:10px}.task-done{opacity:.65;text-decoration:line-through}
+    @media (max-width: 1100px){.tabs{grid-template-columns:repeat(3,1fr)}.layout,.grid-2,.grid-4,.form-grid,.kanban{grid-template-columns:1fr}.hero h1{font-size:24px}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <h1>Kalkulator kruszywa HANDLOWIEC PRO</h1>
+    <p>Wersja PWA do pracy handlowca: szybka wycena, CRM klientów, pipeline sprzedaży, zadania, KPI, cenniki kopalń, SMS, WhatsApp, eksport i import backupu.</p>
+    <div class="badges">
+      <span class="badge">📱 PWA</span><span class="badge">💾 offline</span><span class="badge">📞 call lista</span><span class="badge">📊 KPI</span><span class="badge">🚚 cena na budowie</span>
+    </div>
+  </section>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+    <button class="tab-btn" data-tab="quick">Szybka</button>
+    <button class="tab-btn" data-tab="calc">Kalkulator</button>
+    <button class="tab-btn" data-tab="offer">Oferta</button>
+    <button class="tab-btn" data-tab="clients">Klienci</button>
+    <button class="tab-btn" data-tab="pipeline">Pipeline</button>
+    <button class="tab-btn" data-tab="tasks">Zadania</button>
+    <button class="tab-btn" data-tab="history">Historia</button>
+    <button class="tab-btn" data-tab="settings">Cenniki</button>
+  </div>
+
+  <section id="dashboard" class="tab active">
+    <div class="grid-4" id="dashboardCards"></div>
+    <div class="grid-2" style="margin-top:16px">
+      <div class="card"><h2>Najważniejsi klienci</h2><div id="topClients" class="list"></div></div>
+      <div class="card"><h2>Follow-up na dziś</h2><div id="todayTasks" class="list"></div></div>
+    </div>
+  </section>
+
+  <section id="quick" class="tab">
+    <div class="layout">
+      <div class="card">
+        <h2>Szybka wycena 1 klik</h2>
+        <div class="subtle">Wybierasz kopalnię, frakcję, kilometry i od razu widzisz cenę końcową oraz liczbę aut.</div>
+        <div style="height:8px"></div>
+        <div class="grid-2">
+          <div><label>Kopalnia</label><select id="q_quarry"></select></div>
+          <div><label>Frakcja</label><select id="q_fraction"></select></div>
+          <div><label>Odległość w jedną stronę (km)</label><input id="q_km" inputmode="decimal" value="20"></div>
+          <div><label>Ładowność auta (t)</label><input id="q_load" inputmode="decimal" value="25"></div>
+          <div><label>Marża (zł/t)</label><input id="q_margin" inputmode="decimal" value="3"></div>
+          <div><label>Ilość (t)</label><input id="q_qty" inputmode="decimal" value="25"></div>
+        </div>
+      </div>
+      <div class="metrics">
+        <div class="metric"><div class="metric-ico">🏷️</div><div><div class="lbl">Cena z cennika</div><div class="val" id="q_price">0,00 zł / t</div></div></div>
+        <div class="metric"><div class="metric-ico">🧮</div><div><div class="lbl">Cena końcowa</div><div class="val" id="q_final">0,00 zł / t</div></div></div>
+        <div class="metric"><div class="metric-ico">📄</div><div><div class="lbl">Wartość wyceny</div><div class="val" id="q_total">0,00 zł</div></div></div>
+        <div class="metric"><div class="metric-ico">🚛</div><div><div class="lbl">Liczba aut</div><div class="val" id="q_trucks">0</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="calc" class="tab">
+    <div class="layout">
+      <div class="card">
+        <h2>Pełna wycena</h2>
+        <div class="form-grid">
+          <div><label>Klient</label><input id="clientName"></div>
+          <div><label>Telefon</label><input id="clientPhone"></div>
+          <div><label>Typ klienta</label><select id="clientType"></select></div>
+          <div><label>Segment</label><select id="clientSegment"></select></div>
+          <div><label>Etap sprzedaży</label><select id="clientStage"></select></div>
+          <div><label>Priorytet</label><button id="starBtn" class="secondary" style="width:100%">⭐ Oznacz jako ważny</button></div>
+          <div class="full"><label>Miejsce dostawy</label><input id="deliveryPlace"></div>
+          <div><label>Kopalnia</label><select id="quarry"></select></div>
+          <div><label>Frakcja</label><select id="fraction"></select></div>
+          <div><label>Cena na kopalni (zł/t)</label><input id="quarryPrice" inputmode="decimal"></div>
+          <div><label>Odległość w jedną stronę (km)</label><input id="distanceKm" inputmode="decimal"></div>
+          <div><label>Stawka transportu (zł/km)</label><input id="transportRate" inputmode="decimal"></div>
+          <div><label>Ładowność auta (t)</label><input id="loadTons" inputmode="decimal"></div>
+          <div><label>Marża (zł/t)</label><input id="marginPerTon" inputmode="decimal"></div>
+          <div><label>Ilość (t)</label><input id="quantityTons" inputmode="decimal"></div>
+          <div><label>Następny kontakt</label><input id="nextContact" type="date"></div>
+          <div class="full"><label>Notatki</label><textarea id="notes"></textarea></div>
+          <div class="full btn-row">
+            <button id="saveQuoteBtn">💾 Zapisz wycenę</button>
+            <button id="saveClientBtn" class="secondary">👤 Zapisz klienta</button>
+            <button id="fillFromQuickBtn" class="ghost">⚡ Przepisz z szybkiej wyceny</button>
+            <button id="addTaskBtn" class="secondary">📌 Dodaj zadanie</button>
+            <a class="btn secondary" id="mapsBtn" href="#" target="_blank" rel="noreferrer">📍 Mapa</a>
+            <a class="btn secondary" id="callBtn" href="#">📞 Zadzwoń</a>
+            <span id="infoMsg" class="ok"></span>
+          </div>
+        </div>
+      </div>
+      <div class="metrics">
+        <div class="metric"><div class="metric-ico">🚚</div><div><div class="lbl">Koszt kursu</div><div class="val" id="m_course">0,00 zł</div></div></div>
+        <div class="metric"><div class="metric-ico">📍</div><div><div class="lbl">Transport / tona</div><div class="val" id="m_transport">0,00 zł / t</div></div></div>
+        <div class="metric"><div class="metric-ico">🏗️</div><div><div class="lbl">Cena końcowa</div><div class="val" id="m_final">0,00 zł / t</div></div></div>
+        <div class="metric"><div class="metric-ico">📄</div><div><div class="lbl">Wartość wyceny</div><div class="val" id="m_total">0,00 zł</div></div></div>
+        <div class="metric"><div class="metric-ico">🚛</div><div><div class="lbl">Liczba aut</div><div class="val" id="m_trucks">0</div></div></div>
+        <div class="metric"><div class="metric-ico">💰</div><div><div class="lbl">Marża łącznie</div><div class="val" id="m_margin">0,00 zł</div></div></div>
+        <div class="metric"><div class="metric-ico">🪙</div><div><div class="lbl">Marża na auto</div><div class="val" id="m_margin_truck">0,00 zł</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="offer" class="tab">
+    <div class="layout">
+      <div class="card">
+        <h2>Gotowa treść oferty</h2>
+        <textarea id="offerText" class="offer-box" readonly></textarea>
+        <div class="btn-row" style="margin-top:12px">
+          <button id="copyOfferBtn">📋 Kopiuj ofertę</button>
+          <a class="btn secondary" id="smsBtn" href="#">✉️ Wyślij SMS</a>
+          <a class="btn secondary" id="waBtn" href="#" target="_blank" rel="noreferrer">💬 Wyślij WhatsApp</a>
+          <span id="copyMsg" class="ok"></span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Gotowy tekst telefonu</h3>
+        <textarea id="callScript" class="offer-box" readonly></textarea>
+      </div>
+    </div>
+  </section>
+
+  <section id="clients" class="tab">
+    <div class="grid-4" style="margin-bottom:14px">
+      <div><label>Wyszukaj klienta</label><input id="searchClients"></div>
+      <div><label>Filtr segment</label><select id="filterSegment"></select></div>
+      <div><label>Filtr etap</label><select id="filterStage"></select></div>
+      <div><label>Eksport / import</label><div class="btn-row"><button id="exportBtn" class="secondary" style="flex:1">⬇️ Backup</button><label class="btn secondary" style="flex:1;cursor:pointer">⬆️ Import<input id="importFile" type="file" accept="application/json" style="display:none"></label></div></div>
+    </div>
+    <div id="clientsList" class="list"></div>
+  </section>
+
+  <section id="pipeline" class="tab"><div class="kanban" id="pipelineBoard"></div></section>
+  <section id="tasks" class="tab"><div id="tasksList" class="list"></div></section>
+  <section id="history" class="tab"><div id="quotesList" class="list"></div></section>
+  <section id="settings" class="tab"><div id="settingsList" class="list"></div></section>
+</div>
+
+<script>
+const DEFAULT_QUARRIES = [{"name":"Brzegi","city":"Kraków","defaultRate":6.0,"prices":{"0/2":42,"0/4":39,"2/8":48,"8/16":50,"16/32":52,"0/31,5":38,"0/63":34}},{"name":"Dwory","city":"Oświęcim","defaultRate":6.0,"prices":{"0/2":41,"0/4":38,"2/8":47,"8/16":49,"16/32":51,"0/31,5":37,"0/63":33}},{"name":"Kończyce","city":"Kończyce Wielkie","defaultRate":6.2,"prices":{"0/2":43,"0/4":40,"2/8":49,"8/16":51,"16/32":53,"0/31,5":39,"0/63":35}},{"name":"Niepołomice","city":"Niepołomice","defaultRate":5.8,"prices":{"0/2":42,"0/4":39,"2/8":48,"8/16":50,"16/32":52,"0/31,5":38,"0/63":34}},{"name":"Rajsko","city":"Rajsko","defaultRate":6.0,"prices":{"0/2":41,"0/4":38,"2/8":47,"8/16":49,"16/32":51,"0/31,5":37,"0/63":33}},{"name":"Stawy Monowskie","city":"Przeciszów","defaultRate":6.0,"prices":{"0/2":41,"0/4":38,"2/8":47,"8/16":49,"16/32":51,"0/31,5":37,"0/63":33}},{"name":"Zakole A","city":"Jankowice","defaultRate":6.1,"prices":{"0/2":42,"0/4":39,"2/8":48,"8/16":50,"16/32":52,"0/31,5":38,"0/63":34}},{"name":"Zakole B","city":"Źródła","defaultRate":6.1,"prices":{"0/2":42,"0/4":39,"2/8":48,"8/16":50,"16/32":52,"0/31,5":38,"0/63":34}},{"name":"Zator – Podolsze Nowe","city":"Smolice","defaultRate":6.0,"prices":{"0/2":41,"0/4":38,"2/8":47,"8/16":49,"16/32":51,"0/31,5":37,"0/63":33}}];
+const FRACTIONS = ["0/2","0/4","2/8","8/16","16/32","0/31,5","0/63"];
+const CLIENT_TYPES = ["Betoniarnia","Drogowiec","Skład budowlany","Brukarz","Wykonawca","Inny"];
+const SEGMENTS = ["A","B","C"];
+const STAGES = ["Nowy lead","Po kontakcie","Oferta wysłana","Szansa / negocjacje","Stały klient"];
+const KEYS = {quotes:"kruszywo-handlowiec-pwa-quotes",clients:"kruszywo-handlowiec-pwa-clients",form:"kruszywo-handlowiec-pwa-form",quick:"kruszywo-handlowiec-pwa-quick",quarries:"kruszywo-handlowiec-pwa-quarries",tasks:"kruszywo-handlowiec-pwa-tasks"};
+const $ = id => document.getElementById(id);
+let app = {quarries:load(KEYS.quarries, DEFAULT_QUARRIES), quotes:load(KEYS.quotes, []), clients:load(KEYS.clients, []), tasks:load(KEYS.tasks, [])};
+
+function toNum(v){ if(v===null || v===undefined || v==="") return 0; const n=Number(String(v).replace(",", ".")); return Number.isFinite(n)?n:0; }
+function money(v){ return `${(Number(v)||0).toFixed(2).replace(".",",")} zł`; }
+function tons(v){ return `${(Number(v)||0).toFixed(2).replace(".",",")} t`; }
+function uid(){ return `${Date.now()}-${Math.random().toString(36).slice(2,7)}`; }
+function save(key,val){ localStorage.setItem(key, JSON.stringify(val)); }
+function load(key,fallback){ try{ const v = JSON.parse(localStorage.getItem(key)); return v ?? fallback; }catch{return fallback;} }
+function qData(name){ return app.quarries.find(q => q.name===name) || app.quarries[0]; }
+function escapeHtml(s){ return String(s ?? "").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+function flash(msg,target="infoMsg"){ $(target).textContent = msg; setTimeout(()=>$(target).textContent="", 1600); }
+function calcBase(data){ const quarryPrice=toNum(data.quarryPrice), distance=toNum(data.distanceKm), transportRate=toNum(data.transportRate), loadTons=Math.max(toNum(data.loadTons),1), margin=toNum(data.marginPerTon), quantity=Math.max(toNum(data.quantityTons),0); const courseCost=distance*transportRate*2, transportPerTon=courseCost/loadTons, finalPricePerTon=quarryPrice+transportPerTon+margin, totalValue=finalPricePerTon*quantity, truckCount=quantity>0?Math.ceil(quantity/loadTons):0, marginValue=margin*quantity, marginPerTruck=margin*loadTons; return {courseCost,transportPerTon,finalPricePerTon,totalValue,truckCount,marginValue,marginPerTruck}; }
+function fillSelects(){ $("q_quarry").innerHTML=app.quarries.map(q=>`<option value="${q.name}">${q.name} – ${q.city}</option>`).join(""); $("quarry").innerHTML=app.quarries.map(q=>`<option value="${q.name}">${q.name} – ${q.city}</option>`).join(""); $("q_fraction").innerHTML=FRACTIONS.map(f=>`<option value="${f}">${f}</option>`).join(""); $("fraction").innerHTML=FRACTIONS.map(f=>`<option value="${f}">${f}</option>`).join(""); $("clientType").innerHTML=CLIENT_TYPES.map(t=>`<option value="${t}">${t}</option>`).join(""); $("clientSegment").innerHTML=SEGMENTS.map(s=>`<option value="${s}">${s}</option>`).join(""); $("clientStage").innerHTML=STAGES.map(s=>`<option value="${s}">${s}</option>`).join(""); $("filterSegment").innerHTML=`<option value="">Wszystkie</option>`+SEGMENTS.map(s=>`<option value="${s}">${s}</option>`).join(""); $("filterStage").innerHTML=`<option value="">Wszystkie</option>`+STAGES.map(s=>`<option value="${s}">${s}</option>`).join(""); }
+function getQuick(){ return { quarry:$("q_quarry").value, fraction:$("q_fraction").value, distanceKm:$("q_km").value, loadTons:$("q_load").value, marginPerTon:$("q_margin").value, quantityTons:$("q_qty").value }; }
+function getForm(){ return { clientName:$("clientName").value, clientPhone:$("clientPhone").value, clientType:$("clientType").value, clientSegment:$("clientSegment").value, clientStage:$("clientStage").value, deliveryPlace:$("deliveryPlace").value, quarry:$("quarry").value, fraction:$("fraction").value, quarryPrice:$("quarryPrice").value, distanceKm:$("distanceKm").value, transportRate:$("transportRate").value, loadTons:$("loadTons").value, marginPerTon:$("marginPerTon").value, quantityTons:$("quantityTons").value, nextContact:$("nextContact").value, notes:$("notes").value, starred:$("starBtn").dataset.starred==="1" }; }
+function setForm(f){ $("clientName").value=f.clientName||""; $("clientPhone").value=f.clientPhone||""; $("clientType").value=f.clientType||CLIENT_TYPES[0]; $("clientSegment").value=f.clientSegment||"B"; $("clientStage").value=f.clientStage||STAGES[0]; $("deliveryPlace").value=f.deliveryPlace||""; $("quarry").value=f.quarry||app.quarries[0].name; $("fraction").value=f.fraction||FRACTIONS[0]; $("quarryPrice").value=f.quarryPrice||""; $("distanceKm").value=f.distanceKm||""; $("transportRate").value=f.transportRate||""; $("loadTons").value=f.loadTons||"25"; $("marginPerTon").value=f.marginPerTon||"3"; $("quantityTons").value=f.quantityTons||"25"; $("nextContact").value=f.nextContact||""; $("notes").value=f.notes||""; $("starBtn").dataset.starred=f.starred?"1":"0"; $("starBtn").textContent=f.starred?"⭐ Klient ważny":"⭐ Oznacz jako ważny"; recalcMain(); }
+function buildOfferText(form,r){ const q=qData(form.quarry); return ["Oferta kruszywa",`Klient: ${form.clientName||"-"}`,`Typ klienta: ${form.clientType||"-"}`,`Miejsce dostawy: ${form.deliveryPlace||"-"}`,`Kopalnia: ${q.name} (${q.city})`,`Frakcja: ${form.fraction||"-"}`,`Ilość: ${form.quantityTons||"0"} t`,`Cena na kopalni: ${money(form.quarryPrice)} / t`,`Odległość: ${form.distanceKm||"0"} km`,`Transport: ${money(r.transportPerTon)} / t`,`Marża: ${money(form.marginPerTon)} / t`,`Cena końcowa na budowie: ${money(r.finalPricePerTon)} / t`,`Wartość wyceny: ${money(r.totalValue)}`,`Liczba aut: ${r.truckCount}`,form.notes?`Uwagi: ${form.notes}`:""].filter(Boolean).join("\n"); }
+function buildCallScript(form,r){ return [`Dzień dobry, dzwonię w sprawie dostaw kruszywa.`,`Mam dla Państwa wycenę na frakcję ${form.fraction||"-"} z kopalni ${form.quarry||"-"}.`,`Cena na budowie wychodzi ${money(r.finalPricePerTon)} za tonę.`,`Przy ilości ${form.quantityTons||"0"} ton potrzebne będą ${r.truckCount} auta.`,`Jeśli temat jest aktualny, mogę od razu potwierdzić dostępność i termin.`].join("\n"); }
+function recalcQuick(){ const qf=getQuick(), q=qData(qf.quarry), price=q.prices[qf.fraction]??0, r=calcBase({quarryPrice:price,distanceKm:qf.distanceKm,transportRate:q.defaultRate,loadTons:qf.loadTons,marginPerTon:qf.marginPerTon,quantityTons:qf.quantityTons}); $("q_price").textContent=`${money(price)} / t`; $("q_final").textContent=`${money(r.finalPricePerTon)} / t`; $("q_total").textContent=money(r.totalValue); $("q_trucks").textContent=String(r.truckCount); save(KEYS.quick,qf); }
+function recalcMain(){ const f=getForm(), r=calcBase(f); $("m_course").textContent=money(r.courseCost); $("m_transport").textContent=`${money(r.transportPerTon)} / t`; $("m_final").textContent=`${money(r.finalPricePerTon)} / t`; $("m_total").textContent=money(r.totalValue); $("m_trucks").textContent=String(r.truckCount); $("m_margin").textContent=money(r.marginValue); $("m_margin_truck").textContent=money(r.marginPerTruck); const offer=buildOfferText(f,r); $("offerText").value=offer; $("callScript").value=buildCallScript(f,r); $("smsBtn").href=`sms:${f.clientPhone||""}&body=${encodeURIComponent(offer)}`; $("waBtn").href=`https://wa.me/${(f.clientPhone||"").replace(/\D/g,"")}?text=${encodeURIComponent(offer)}`; $("callBtn").href=`tel:${f.clientPhone||""}`; $("mapsBtn").href=`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(f.deliveryPlace||f.clientName||"")}`; save(KEYS.form,f); }
+function segmentPill(seg){ if(seg==="A") return 'pill pill-a'; if(seg==="B") return 'pill pill-b'; return 'pill pill-c'; }
+function renderClients(){ const search=$("searchClients").value.toLowerCase(), seg=$("filterSegment").value, stage=$("filterStage").value; const filtered=app.clients.filter(c=>{ const okSearch=[c.name,c.phone,c.type,c.deliveryPlace,c.notes].join(" ").toLowerCase().includes(search); const okSeg=!seg||c.segment===seg; const okStage=!stage||c.stage===stage; return okSearch&&okSeg&&okStage; }); const box=$("clientsList"); if(!filtered.length){ box.innerHTML=`<div class="card"><div class="subtle">Brak klientów pasujących do filtrowania.</div></div>`; return; } box.innerHTML=filtered.map(c=>`<div class="card"><div class="item-head"><div><h3>${escapeHtml(c.name)} ${c.starred?"⭐":""}</h3><div class="subtle">Typ: ${escapeHtml(c.type||"-")} | Etap: ${escapeHtml(c.stage||"-")}</div><div class="subtle">Telefon: ${escapeHtml(c.phone||"-")}</div><div class="subtle">Miejsce: ${escapeHtml(c.deliveryPlace||"-")}</div><div class="subtle">Następny kontakt: ${escapeHtml(c.nextContact||"-")}</div><div class="subtle">Uwagi: ${escapeHtml(c.notes||"-")}</div></div><span class="${segmentPill(c.segment)}">Segment ${escapeHtml(c.segment||"-")}</span></div><div class="btn-row" style="margin-top:12px"><button onclick="useClient('${c.id}')">Użyj w wycenie</button><button class="secondary" onclick="advanceStage('${c.id}')">Następny etap</button><button class="secondary" onclick="toggleClientStar('${c.id}')">${c.starred?"Usuń priorytet":"Priorytet"}</button><button class="secondary" onclick="deleteClient('${c.id}')">Usuń</button></div></div>`).join(""); }
+function renderPipeline(){ const board=$("pipelineBoard"); board.innerHTML=STAGES.map(stage=>{ const items=app.clients.filter(c=>c.stage===stage); return `<div class="col"><h3>${stage}</h3>${items.length?items.map(c=>`<div class="card" style="margin-top:8px;padding:12px"><div style="font-weight:800">${escapeHtml(c.name)} ${c.starred?"⭐":""}</div><div class="subtle">${escapeHtml(c.type||"-")} • Segment ${escapeHtml(c.segment||"-")}</div><div class="subtle">${escapeHtml(c.phone||"-")}</div><div class="btn-row" style="margin-top:8px"><button onclick="useClient('${c.id}')">Otwórz</button><button class="secondary" onclick="advanceStage('${c.id}')">▶</button></div></div>`).join(""):`<div class="subtle">Brak klientów</div>`}</div>`; }).join(""); }
+function renderQuotes(){ const box=$("quotesList"); if(!app.quotes.length){ box.innerHTML=`<div class="card"><div class="subtle">Brak zapisanych wycen.</div></div>`; return; } box.innerHTML=app.quotes.map(q=>`<div class="card"><div class="item-head"><div><h3>${escapeHtml(q.form.clientName||"Bez nazwy klienta")}</h3><div class="subtle">${escapeHtml(q.createdAt)}</div><div class="subtle">Frakcja: ${escapeHtml(q.form.fraction)} | Kopalnia: ${escapeHtml(q.form.quarry)}</div><div class="subtle">Ilość: ${tons(q.form.quantityTons)} | Cena końcowa: ${money(q.result.finalPricePerTon)} / t</div><div class="subtle">Wartość: ${money(q.result.totalValue)} | Auta: ${q.result.truckCount}</div></div><span class="${segmentPill(q.form.clientSegment||'C')}">Segment ${escapeHtml(q.form.clientSegment||"-")}</span></div><div class="btn-row" style="margin-top:12px"><button onclick="loadQuote('${q.id}')">Wczytaj</button><button class="secondary" onclick="deleteQuote('${q.id}')">Usuń</button></div></div>`).join(""); }
+function renderTasks(){ const box=$("tasksList"); if(!app.tasks.length){ box.innerHTML=`<div class="card"><div class="subtle">Brak zadań. Dodaj zadanie z karty wyceny.</div></div>`; return; } box.innerHTML=app.tasks.map(t=>`<div class="card ${t.done?'task-done':''}"><h3>${escapeHtml(t.title)}</h3><div class="subtle">Termin: ${escapeHtml(t.date||"-")}</div><div class="subtle">${escapeHtml(t.note)}</div><div class="btn-row" style="margin-top:12px"><button onclick="toggleTask('${t.id}')">${t.done?"Otwórz":"Zrobione"}</button><button class="secondary" onclick="deleteTask('${t.id}')">Usuń</button></div></div>`).join(""); }
+function renderSettings(){ const box=$("settingsList"); box.innerHTML=app.quarries.map(q=>`<div class="card"><h3>${escapeHtml(q.name)} – ${escapeHtml(q.city)}</h3><div class="grid-4"><div><label>Stawka transportu</label><input inputmode="decimal" value="${q.defaultRate}" onchange="updateRate('${q.name}', this.value)"></div>${FRACTIONS.map(f=>`<div><label>${f}</label><input inputmode="decimal" value="${q.prices[f]}" onchange="updatePrice('${q.name}','${f}', this.value)"></div>`).join("")}</div></div>`).join(""); }
+function renderDashboard(){ const totalClients=app.clients.length, totalQuotes=app.quotes.length, openTasks=app.tasks.filter(t=>!t.done).length, totalMargin=app.quotes.reduce((a,q)=>a+(q.result?.marginValue||0),0); $("dashboardCards").innerHTML=`<div class="metric"><div class="metric-ico">👥</div><div><div class="lbl">Klienci</div><div class="val">${totalClients}</div></div></div><div class="metric"><div class="metric-ico">📄</div><div><div class="lbl">Wyceny</div><div class="val">${totalQuotes}</div></div></div><div class="metric"><div class="metric-ico">📌</div><div><div class="lbl">Otwarte zadania</div><div class="val">${openTasks}</div></div></div><div class="metric"><div class="metric-ico">💰</div><div><div class="lbl">Suma marży z wycen</div><div class="val">${money(totalMargin)}</div></div></div>`; const top=[...app.clients].sort((a,b)=>Number(!!b.starred)-Number(!!a.starred)).slice(0,5); $("topClients").innerHTML=top.length?top.map(c=>`<div class="card" style="padding:12px"><div style="font-weight:800">${escapeHtml(c.name)} ${c.starred?"⭐":""}</div><div class="subtle">${escapeHtml(c.type||"-")} • Segment ${escapeHtml(c.segment||"-")} • ${escapeHtml(c.stage||"-")}</div></div>`).join(""):`<div class="subtle">Brak klientów</div>`; const today=[...app.tasks].filter(t=>!t.done).slice(0,5); $("todayTasks").innerHTML=today.length?today.map(t=>`<div class="card" style="padding:12px"><div style="font-weight:800">${escapeHtml(t.title)}</div><div class="subtle">${escapeHtml(t.note)}</div></div>`).join(""):`<div class="subtle">Brak otwartych zadań</div>`; }
+window.useClient=function(id){ const c=app.clients.find(x=>x.id===id); if(!c) return; const current=getForm(); setForm({...current, clientName:c.name||"", clientPhone:c.phone||"", clientType:c.type||current.clientType, clientSegment:c.segment||"B", clientStage:c.stage||STAGES[0], deliveryPlace:c.deliveryPlace||"", nextContact:c.nextContact||"", notes:c.notes||current.notes, starred:!!c.starred}); activateTab("calc"); };
+window.advanceStage=function(id){ app.clients=app.clients.map(c=>{ if(c.id!==id) return c; const idx=STAGES.indexOf(c.stage||STAGES[0]); return {...c, stage: STAGES[Math.min(idx+1, STAGES.length-1)]}; }); save(KEYS.clients,app.clients); renderAll(); };
+window.toggleClientStar=function(id){ app.clients=app.clients.map(c=>c.id===id?{...c,starred:!c.starred}:c); save(KEYS.clients,app.clients); renderAll(); };
+window.deleteClient=function(id){ app.clients=app.clients.filter(c=>c.id!==id); save(KEYS.clients,app.clients); renderAll(); };
+window.loadQuote=function(id){ const q=app.quotes.find(x=>x.id===id); if(!q) return; setForm(q.form); activateTab("calc"); };
+window.deleteQuote=function(id){ app.quotes=app.quotes.filter(q=>q.id!==id); save(KEYS.quotes,app.quotes); renderAll(); };
+window.toggleTask=function(id){ app.tasks=app.tasks.map(t=>t.id===id?{...t,done:!t.done}:t); save(KEYS.tasks,app.tasks); renderAll(); };
+window.deleteTask=function(id){ app.tasks=app.tasks.filter(t=>t.id!==id); save(KEYS.tasks,app.tasks); renderAll(); };
+window.updatePrice=function(quarryName,fraction,value){ app.quarries=app.quarries.map(q=>q.name===quarryName?{...q,prices:{...q.prices,[fraction]:toNum(value)}}:q); save(KEYS.quarries,app.quarries); if($("quarry").value===quarryName && $("fraction").value===fraction) $("quarryPrice").value=String(toNum(value)); recalcQuick(); recalcMain(); renderSettings(); };
+window.updateRate=function(quarryName,value){ app.quarries=app.quarries.map(q=>q.name===quarryName?{...q,defaultRate:toNum(value)}:q); save(KEYS.quarries,app.quarries); if($("quarry").value===quarryName) $("transportRate").value=String(toNum(value)); recalcQuick(); recalcMain(); renderSettings(); };
+function activateTab(name){ document.querySelectorAll(".tab-btn").forEach(btn=>btn.classList.toggle("active",btn.dataset.tab===name)); document.querySelectorAll(".tab").forEach(tab=>tab.classList.toggle("active",tab.id===name)); }
+document.querySelectorAll(".tab-btn").forEach(btn=>btn.addEventListener("click",()=>activateTab(btn.dataset.tab)));
+function exportData(){ const blob=new Blob([JSON.stringify({quarries:app.quarries,clients:app.clients,quotes:app.quotes,tasks:app.tasks},null,2)],{type:"application/json"}); const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download="kruszywo_handlowiec_backup.json"; a.click(); URL.revokeObjectURL(url); }
+function importData(file){ const reader=new FileReader(); reader.onload=()=>{ try{ const data=JSON.parse(reader.result); if(data.quarries) app.quarries=data.quarries; if(data.clients) app.clients=data.clients; if(data.quotes) app.quotes=data.quotes; if(data.tasks) app.tasks=data.tasks; save(KEYS.quarries,app.quarries); save(KEYS.clients,app.clients); save(KEYS.quotes,app.quotes); save(KEYS.tasks,app.tasks); fillSelects(); renderAll(); recalcQuick(); recalcMain(); flash("Backup wczytany"); }catch{} }; reader.readAsText(file); }
+function renderAll(){ renderClients(); renderPipeline(); renderQuotes(); renderTasks(); renderSettings(); renderDashboard(); }
+function init(){
+  fillSelects();
+  const quick=load(KEYS.quick,{quarry:"Brzegi",fraction:"0/31,5",distanceKm:"20",loadTons:"25",marginPerTon:"3",quantityTons:"25"});
+  $("q_quarry").value=quick.quarry; $("q_fraction").value=quick.fraction; $("q_km").value=quick.distanceKm; $("q_load").value=quick.loadTons; $("q_margin").value=quick.marginPerTon; $("q_qty").value=quick.quantityTons;
+  const form=load(KEYS.form,{clientName:"",clientPhone:"",clientType:"Betoniarnia",clientSegment:"B",clientStage:"Nowy lead",deliveryPlace:"",quarry:"Brzegi",fraction:"0/31,5",quarryPrice:"38",distanceKm:"",transportRate:"6",loadTons:"25",marginPerTon:"3",quantityTons:"25",nextContact:"",notes:"",starred:false});
+  setForm(form);
+  ["q_quarry","q_fraction","q_km","q_load","q_margin","q_qty"].forEach(id=>$(id).addEventListener("input",recalcQuick));
+  ["q_quarry","q_fraction"].forEach(id=>$(id).addEventListener("change",recalcQuick));
+  $("quarry").addEventListener("change",e=>{ const q=qData(e.target.value); $("transportRate").value=String(q.defaultRate); $("quarryPrice").value=String(q.prices[$("fraction").value]??$("quarryPrice").value); recalcMain(); });
+  $("fraction").addEventListener("change",e=>{ const q=qData($("quarry").value); $("quarryPrice").value=String(q.prices[e.target.value]??$("quarryPrice").value); recalcMain(); });
+  ["clientName","clientPhone","clientType","clientSegment","clientStage","deliveryPlace","quarryPrice","distanceKm","transportRate","loadTons","marginPerTon","quantityTons","nextContact","notes"].forEach(id=>$(id).addEventListener("input",recalcMain));
+  $("starBtn").addEventListener("click",()=>{ const active=$("starBtn").dataset.starred==="1"; $("starBtn").dataset.starred=active?"0":"1"; $("starBtn").textContent=active?"⭐ Oznacz jako ważny":"⭐ Klient ważny"; recalcMain(); });
+  $("fillFromQuickBtn").addEventListener("click",()=>{ const qf=getQuick(), q=qData(qf.quarry); $("quarry").value=qf.quarry; $("fraction").value=qf.fraction; $("quarryPrice").value=String(q.prices[qf.fraction]??0); $("transportRate").value=String(q.defaultRate); $("distanceKm").value=qf.distanceKm; $("loadTons").value=qf.loadTons; $("marginPerTon").value=qf.marginPerTon; $("quantityTons").value=qf.quantityTons; recalcMain(); flash("Przepisano z szybkiej wyceny"); });
+  $("saveClientBtn").addEventListener("click",()=>{ const f=getForm(); if(!f.clientName.trim()) return flash("Wpisz nazwę klienta"); const item={id:uid(),name:f.clientName,phone:f.clientPhone,type:f.clientType,segment:f.clientSegment,stage:f.clientStage,deliveryPlace:f.deliveryPlace,nextContact:f.nextContact,notes:f.notes,starred:f.starred}; app.clients=[item,...app.clients.filter(c=>!(c.name===item.name && c.phone===item.phone))]; save(KEYS.clients,app.clients); renderAll(); flash("Klient zapisany"); });
+  $("saveQuoteBtn").addEventListener("click",()=>{ const f=getForm(), r=calcBase(f), item={id:uid(),createdAt:new Date().toLocaleString("pl-PL"),form:f,result:r,offerText:buildOfferText(f,r)}; app.quotes=[item,...app.quotes]; save(KEYS.quotes,app.quotes); renderAll(); flash("Wycena zapisana"); });
+  $("addTaskBtn").addEventListener("click",()=>{ const f=getForm(); if(!f.clientName && !f.deliveryPlace) return flash("Wpisz klienta lub miejsce"); const item={id:uid(),title:f.clientName||f.deliveryPlace,note:`Oddzwonić / sprawdzić ofertę: ${f.fraction}`,date:f.nextContact||"",done:false}; app.tasks=[item,...app.tasks]; save(KEYS.tasks,app.tasks); renderAll(); flash("Zadanie dodane"); });
+  $("copyOfferBtn").addEventListener("click",async()=>{ try{ await navigator.clipboard.writeText($("offerText").value); flash("Skopiowano","copyMsg"); }catch{} });
+  $("searchClients").addEventListener("input",renderClients); $("filterSegment").addEventListener("change",renderClients); $("filterStage").addEventListener("change",renderClients);
+  $("exportBtn").addEventListener("click",exportData); $("importFile").addEventListener("change",e=>{ const file=e.target.files?.[0]; if(file) importData(file); });
+  renderAll(); recalcQuick(); recalcMain();
+  if ('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js').catch(()=>{}); }
+}
+init();
+</script>
+</body>
+</html>
