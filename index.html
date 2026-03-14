@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kalkulator kruszywa</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#111111">
+<style>
+:root{
+  --bg:#f4f6f8; --card:#fff; --line:#d8dde3; --text:#111827; --muted:#6b7280; --black:#111; --soft:#f3f4f6;
+  --a:#dcfce7; --b:#fef3c7; --c:#e0f2fe;
+}
+*{box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial;margin:0;background:var(--bg);color:var(--text)}
+.header{background:#111;color:#fff;padding:12px 16px;font-size:20px;font-weight:700}
+.wrap{padding:14px;max-width:980px;margin:auto}
+.card{background:#fff;padding:16px;border-radius:14px;margin-bottom:14px;box-shadow:0 4px 12px rgba(0,0,0,.06);border:1px solid var(--line)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+label{display:block;font-size:13px;font-weight:700;margin-bottom:4px}
+input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid #cbd5e1;margin-top:4px;margin-bottom:10px;font-size:16px;background:#fff}
+textarea{min-height:90px;resize:vertical}
+button,.btn{padding:10px 14px;border:none;border-radius:10px;background:#111;color:#fff;font-weight:600;text-decoration:none;display:inline-block}
+button.secondary,.btn.secondary{background:#fff;color:#111;border:1px solid #cbd5e1}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.kpi{font-size:24px;font-weight:800}
+.small{font-size:13px;color:var(--muted)}
+.result{font-size:18px;font-weight:700;line-height:1.5}
+.client,.quote,.task{border-top:1px solid #eee;padding:10px 0}
+.pill{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700}
+.a{background:var(--a)} .b{background:var(--b)} .c{background:var(--c)}
+.col{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px}
+.pipeline{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.hidden{display:none}
+.tabs{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:14px}
+.tabbtn{background:#fff;color:#111;border:1px solid #cbd5e1}
+.tabbtn.active{background:#111;color:#fff}
+@media (max-width:800px){
+  .grid,.grid3,.pipeline,.tabs{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="header">Kalkulator kruszywa</div>
+<div class="wrap">
+
+<div class="tabs">
+  <button class="tabbtn active" data-tab="dashboard">Dashboard</button>
+  <button class="tabbtn" data-tab="wycena">Wycena</button>
+  <button class="tabbtn" data-tab="klienci">Klienci</button>
+  <button class="tabbtn" data-tab="pipeline">Pipeline</button>
+  <button class="tabbtn" data-tab="zadania">Zadania</button>
+  <button class="tabbtn" data-tab="oferta">Oferta</button>
+</div>
+
+<div id="dashboard" class="tab">
+  <div class="grid3">
+    <div class="card"><div class="small">Klienci</div><div class="kpi" id="kpiClients">0</div></div>
+    <div class="card"><div class="small">Wyceny</div><div class="kpi" id="kpiQuotes">0</div></div>
+    <div class="card"><div class="small">Otwarte zadania</div><div class="kpi" id="kpiTasks">0</div></div>
+  </div>
+</div>
+
+<div id="wycena" class="tab hidden">
+  <div class="card">
+    <h3>Szybka wycena</h3>
+    <div class="grid">
+      <div><label>Cena na kopalni zł/t</label><input id="price" type="number" value="38"></div>
+      <div><label>Kilometry (jedna strona)</label><input id="km" type="number" value="20"></div>
+      <div><label>Stawka transport zł/km</label><input id="rate" type="number" value="6"></div>
+      <div><label>Ładowność auta t</label><input id="load" type="number" value="25"></div>
+      <div><label>Marża zł/t</label><input id="margin" type="number" value="3"></div>
+      <div><label>Ilość ton</label><input id="qty" type="number" value="25"></div>
+    </div>
+    <div class="row">
+      <button onclick="calc()">Policz</button>
+      <button class="secondary" onclick="saveQuote()">Zapisz wycenę</button>
+      <button class="secondary" onclick="buildOffer()">Przygotuj ofertę</button>
+    </div>
+    <p id="result" class="result"></p>
+  </div>
+
+  <div class="card">
+    <h3>Dodaj klienta</h3>
+    <div class="grid">
+      <div><label>Nazwa</label><input id="cname"></div>
+      <div><label>Telefon</label><input id="cphone"></div>
+      <div><label>Miejscowość</label><input id="ccity"></div>
+      <div><label>Segment</label>
+        <select id="csegment">
+          <option value="A">A</option>
+          <option value="B" selected>B</option>
+          <option value="C">C</option>
+        </select>
+      </div>
+      <div><label>Etap</label>
+        <select id="cstage">
+          <option value="Nowy lead">Nowy lead</option>
+          <option value="Po kontakcie">Po kontakcie</option>
+          <option value="Oferta wysłana">Oferta wysłana</option>
+          <option value="Stały klient">Stały klient</option>
+        </select>
+      </div>
+      <div><label>Następny kontakt</label><input id="cnext" type="date"></div>
+    </div>
+    <label>Notatki</label>
+    <textarea id="cnotes"></textarea>
+    <div class="row">
+      <button onclick="addClient()">Dodaj klienta</button>
+      <button class="secondary" onclick="createTaskFromClient()">Dodaj zadanie</button>
+    </div>
+  </div>
+</div>
+
+<div id="klienci" class="tab hidden">
+  <div class="card">
+    <h3>Lista klientów</h3>
+    <div class="grid">
+      <div><label>Szukaj</label><input id="search" oninput="renderClients()" placeholder="nazwa / telefon / miasto"></div>
+      <div><label>Filtr segment</label>
+        <select id="filterSegment" onchange="renderClients()">
+          <option value="">Wszystkie</option>
+          <option value="A">A</option>
+          <option value="B">B</option>
+          <option value="C">C</option>
+        </select>
+      </div>
+    </div>
+    <div id="clients"></div>
+  </div>
+</div>
+
+<div id="pipeline" class="tab hidden">
+  <div class="card">
+    <h3>Pipeline sprzedaży</h3>
+    <div class="pipeline" id="pipelineBoard"></div>
+  </div>
+</div>
+
+<div id="zadania" class="tab hidden">
+  <div class="card">
+    <h3>Zadania / follow-up</h3>
+    <div id="tasks"></div>
+  </div>
+</div>
+
+<div id="oferta" class="tab hidden">
+  <div class="card">
+    <h3>Gotowa oferta</h3>
+    <textarea id="offerBox"></textarea>
+    <div class="row">
+      <button onclick="copyOffer()">Kopiuj ofertę</button>
+      <button class="secondary" onclick="printOffer()">Drukuj / PDF</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const STAGES=["Nowy lead","Po kontakcie","Oferta wysłana","Stały klient"];
+let clients=JSON.parse(localStorage.getItem("clients")||"[]");
+let tasks=JSON.parse(localStorage.getItem("tasks")||"[]");
+let quotes=JSON.parse(localStorage.getItem("quotes")||"[]");
+
+document.querySelectorAll(".tabbtn").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".tabbtn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    document.querySelectorAll(".tab").forEach(t=>t.classList.add("hidden"));
+    document.getElementById(btn.dataset.tab).classList.remove("hidden");
+  });
+});
+
+function calc(){
+  let price=Number(document.getElementById("price").value||0);
+  let km=Number(document.getElementById("km").value||0);
+  let rate=Number(document.getElementById("rate").value||0);
+  let load=Number(document.getElementById("load").value||1);
+  let margin=Number(document.getElementById("margin").value||0);
+  let qty=Number(document.getElementById("qty").value||0);
+
+  let course=km*rate*2;
+  let transport=course/load;
+  let final=price+transport+margin;
+  let value=final*qty;
+  let trucks=Math.ceil(qty/load);
+  let marginTotal=margin*qty;
+
+  document.getElementById("result").innerHTML=
+  "Cena końcowa: "+final.toFixed(2)+" zł/t<br>"+
+  "Wartość zamówienia: "+value.toFixed(2)+" zł<br>"+
+  "Liczba aut: "+trucks+"<br>"+
+  "Marża łącznie: "+marginTotal.toFixed(2)+" zł";
+
+  return {price,km,rate,load,margin,qty,course,transport,final,value,trucks,marginTotal};
+}
+
+function addClient(){
+  let c={
+    id:Date.now(),
+    name:document.getElementById("cname").value,
+    phone:document.getElementById("cphone").value,
+    city:document.getElementById("ccity").value,
+    segment:document.getElementById("csegment").value,
+    stage:document.getElementById("cstage").value,
+    next:document.getElementById("cnext").value,
+    notes:document.getElementById("cnotes").value
+  };
+  if(!c.name) return;
+  clients.unshift(c);
+  localStorage.setItem("clients",JSON.stringify(clients));
+  document.getElementById("cname").value="";
+  document.getElementById("cphone").value="";
+  document.getElementById("ccity").value="";
+  document.getElementById("cnotes").value="";
+  renderAll();
+}
+
+function createTaskFromClient(){
+  let name=document.getElementById("cname").value;
+  if(!name) return;
+  tasks.unshift({id:Date.now(), title:"Kontakt: "+name, done:false});
+  localStorage.setItem("tasks",JSON.stringify(tasks));
+  renderTasks();
+  renderDashboard();
+}
+
+function segmentClass(seg){
+  if(seg==="A") return "pill a";
+  if(seg==="B") return "pill b";
+  return "pill c";
+}
+
+function renderClients(){
+  let q=(document.getElementById("search").value||"").toLowerCase();
+  let f=document.getElementById("filterSegment").value||"";
+  let box=document.getElementById("clients");
+  box.innerHTML="";
+  clients
+    .filter(c => (!q || (c.name+" "+c.phone+" "+c.city).toLowerCase().includes(q)) && (!f || c.segment===f))
+    .forEach(c=>{
+      let div=document.createElement("div");
+      div.className="client";
+      div.innerHTML=
+        "<div><b>"+c.name+"</b> <span class='"+segmentClass(c.segment)+"'>"+c.segment+"</span></div>"+
+        "<div class='small'>"+(c.phone||"-")+" | "+(c.city||"-")+"</div>"+
+        "<div class='small'>Etap: "+(c.stage||"-")+" | Następny kontakt: "+(c.next||"-")+"</div>"+
+        "<div class='small'>"+(c.notes||"")+"</div>"+
+        "<div class='row' style='margin-top:8px'>"+
+        "<button class='secondary' onclick='advanceClient("+c.id+")'>Następny etap</button>"+
+        "<button class='secondary' onclick='deleteClient("+c.id+")'>Usuń</button>"+
+        "</div>";
+      box.appendChild(div);
+    });
+}
+
+function advanceClient(id){
+  clients=clients.map(c=>{
+    if(c.id!==id) return c;
+    let idx=STAGES.indexOf(c.stage);
+    c.stage=STAGES[Math.min(idx+1, STAGES.length-1)];
+    return c;
+  });
+  localStorage.setItem("clients",JSON.stringify(clients));
+  renderAll();
+}
+
+function deleteClient(id){
+  clients=clients.filter(c=>c.id!==id);
+  localStorage.setItem("clients",JSON.stringify(clients));
+  renderAll();
+}
+
+function renderPipeline(){
+  let board=document.getElementById("pipelineBoard");
+  board.innerHTML="";
+  STAGES.forEach(stage=>{
+    let col=document.createElement("div");
+    col.className="col";
+    col.innerHTML="<h3>"+stage+"</h3>";
+    clients.filter(c=>c.stage===stage).forEach(c=>{
+      let item=document.createElement("div");
+      item.className="client";
+      item.innerHTML="<b>"+c.name+"</b><div class='small'>"+c.city+" | "+c.phone+"</div><div class='small'>Segment "+c.segment+"</div>";
+      col.appendChild(item);
+    });
+    board.appendChild(col);
+  });
+}
+
+function renderTasks(){
+  let box=document.getElementById("tasks");
+  box.innerHTML="";
+  tasks.forEach(t=>{
+    let div=document.createElement("div");
+    div.className="task"+(t.done?" task-done":"");
+    div.innerHTML="<b>"+t.title+"</b><div class='row' style='margin-top:8px'><button class='secondary' onclick='toggleTask("+t.id+")'>"+(t.done?"Otwórz":"Zrobione")+"</button><button class='secondary' onclick='deleteTask("+t.id+")'>Usuń</button></div>";
+    box.appendChild(div);
+  });
+}
+
+function toggleTask(id){
+  tasks=tasks.map(t=>t.id===id?{...t,done:!t.done}:t);
+  localStorage.setItem("tasks",JSON.stringify(tasks));
+  renderTasks(); renderDashboard();
+}
+
+function deleteTask(id){
+  tasks=tasks.filter(t=>t.id!==id);
+  localStorage.setItem("tasks",JSON.stringify(tasks));
+  renderTasks(); renderDashboard();
+}
+
+function saveQuote(){
+  let r=calc();
+  quotes.unshift({id:Date.now(), created:new Date().toLocaleString("pl-PL"), ...r});
+  localStorage.setItem("quotes",JSON.stringify(quotes));
+  renderDashboard();
+}
+
+function buildOffer(){
+  let r=calc();
+  let txt =
+    "Oferta kruszywa\n"+
+    "Cena końcowa: "+r.final.toFixed(2)+" zł/t\n"+
+    "Ilość: "+r.qty+" t\n"+
+    "Liczba aut: "+r.trucks+"\n"+
+    "Wartość zamówienia: "+r.value.toFixed(2)+" zł\n"+
+    "Transport na tonę: "+r.transport.toFixed(2)+" zł/t";
+  document.getElementById("offerBox").value=txt;
+}
+
+function copyOffer(){
+  navigator.clipboard.writeText(document.getElementById("offerBox").value||"");
+}
+
+function printOffer(){
+  let w=window.open("","");
+  w.document.write("<pre style='font-family:Arial;padding:20px'>"+document.getElementById("offerBox").value+"</pre>");
+  w.print();
+  w.close();
+}
+
+function renderDashboard(){
+  document.getElementById("kpiClients").innerText=clients.length;
+  document.getElementById("kpiQuotes").innerText=quotes.length;
+  document.getElementById("kpiTasks").innerText=tasks.filter(t=>!t.done).length;
+
+  let top=document.getElementById("topClients");
+  top.innerHTML="";
+  clients.slice(0,5).forEach(c=>{
+    let div=document.createElement("div");
+    div.className="client";
+    div.innerHTML="<b>"+c.name+"</b> <span class='"+segmentClass(c.segment)+"'>"+c.segment+"</span><div class='small'>"+c.stage+"</div>";
+    top.appendChild(div);
+  });
+
+  let todo=document.getElementById("todayTasks");
+  todo.innerHTML="";
+  tasks.filter(t=>!t.done).slice(0,5).forEach(t=>{
+    let div=document.createElement("div");
+    div.className="task";
+    div.innerHTML="<b>"+t.title+"</b>";
+    todo.appendChild(div);
+  });
+}
+
+function renderAll(){
+  renderClients();
+  renderPipeline();
+  renderTasks();
+  renderDashboard();
+}
+
+renderAll();
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js');
+}
+</script>
+</body>
+</html>
