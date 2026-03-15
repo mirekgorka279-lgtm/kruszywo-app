@@ -1,10 +1,10 @@
 {
-  "name": "Kalkulator kruszywa HANDLOWIEC PRO",
-  "short_name": "Kruszywo PRO",
+  "name": "Kalkulator kruszywa",
+  "short_name": "Kruszywo",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#111111",
+  "theme_color": "#232323",
   "icons": [
     {
       "src": "icon-192.png",

@@ -1,7 +1,7 @@
 
 self.addEventListener('install', e=>{
-  e.waitUntil(caches.open('kruszywo-pro').then(c=>c.addAll(['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png'])));
-});
+e.waitUntil(caches.open('kruszywo').then(c=>c.addAll(['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png'])))
+})
 self.addEventListener('fetch', e=>{
-  e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));
-});
+e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)))
+})
