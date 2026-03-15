@@ -11,13 +11,7 @@ body{font-family:-apple-system,Arial,sans-serif;margin:0;background:#f4f6f8;colo
 .header{background:#232323;color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .header-title{font-size:20px;font-weight:700}
 .header-brand{display:flex;align-items:center;gap:10px;min-width:max-content}
-.header-mark{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#e7b54a 0%,#c98d1f 100%);position:relative}
-.header-mark:before,.header-mark:after{content:"";position:absolute;background:#232323;border-radius:2px}
-.header-mark:before{width:14px;height:4px;left:8px;top:9px}
-.header-mark:after{width:10px;height:4px;left:8px;top:17px}
-.header-brand-text{line-height:1.05;text-align:right}
-.header-brand-text .top{font-size:14px;font-weight:800;letter-spacing:.06em}
-.header-brand-text .bottom{font-size:11px;color:#d7d7d7;letter-spacing:.08em}
+.header-brand img{height:42px;width:auto;display:block}
 .wrap{max-width:1160px;margin:auto;padding:16px}
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
 .tile{background:#fff;padding:22px;border-radius:14px;box-shadow:0 4px 12px rgba(0,0,0,.08);text-align:center;font-weight:700;cursor:pointer}
@@ -39,6 +33,7 @@ textarea#offerBox{min-height:240px}
 .badge{display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:38px;border-radius:999px;background:#f6eebe;color:#111827;font-weight:800;font-size:14px;padding:0 10px}
 .client-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
 .notice{font-size:13px;color:#667085;margin-top:-2px;margin-bottom:10px}
+.result-box{font-size:18px;font-weight:700;margin-top:8px}
 @media (max-width:900px){
   .grid,.grid3,.grid4{grid-template-columns:1fr}
   .header{align-items:flex-start}
@@ -48,17 +43,14 @@ textarea#offerBox{min-height:240px}
 <body>
 <div class="header">
   <div class="header-title">Kalkulator kruszywa</div>
-  <div class="header-brand" aria-label="Kruszywo S.A.">
-    <div class="header-mark"></div>
-    <div class="header-brand-text">
-      <div class="top">KRUSZYWO S.A.</div>
-      <div class="bottom">KRAKÓW</div>
-    </div>
+  <div class="header-brand">
+    <img src="logo.png" alt="Logo">
   </div>
 </div>
 
 <div class="wrap">
   <div class="tiles">
+    <div class="tile" onclick="show('quick')">Szybka wycena</div>
     <div class="tile" onclick="show('calc')">Kalkulator</div>
     <div class="tile" onclick="show('history')">Historia wycen</div>
     <div class="tile" onclick="show('clients')">Klienci</div>
@@ -66,7 +58,49 @@ textarea#offerBox{min-height:240px}
     <div class="tile" onclick="show('offer')">Oferta</div>
   </div>
 
-  <div id="calc" class="card">
+  <div id="quick" class="card">
+    <h3 class="section-title">Szybka wycena</h3>
+    <div class="grid">
+      <div>
+        <label>Kopalnia</label>
+        <select id="quickQuarry" onchange="onQuickQuarryChange()"></select>
+      </div>
+      <div>
+        <label>Towar / frakcja</label>
+        <select id="quickProduct" onchange="syncQuickPrice()"></select>
+      </div>
+      <div>
+        <label>Cena z kopalni</label>
+        <input id="quickPrice" type="number">
+      </div>
+      <div>
+        <label>Kilometry</label>
+        <input id="quickKm" type="number" value="20">
+      </div>
+      <div>
+        <label>Stawka transportu</label>
+        <input id="quickRate" type="number">
+      </div>
+      <div>
+        <label>Ładowność auta</label>
+        <input id="quickLoad" type="number" value="25">
+      </div>
+      <div>
+        <label>Marża</label>
+        <input id="quickMargin" type="number" value="3">
+      </div>
+      <div>
+        <label>Ilość ton</label>
+        <input id="quickQty" type="number" value="25">
+      </div>
+    </div>
+    <div class="actions">
+      <button onclick="calcQuick()">Policz</button>
+    </div>
+    <div id="quickResult" class="result-box"></div>
+  </div>
+
+  <div id="calc" class="card hidden">
     <h3 class="section-title">Kalkulator ceny</h3>
     <div class="grid">
       <div>
@@ -116,7 +150,7 @@ textarea#offerBox{min-height:240px}
       <div>
         <label>Adres dostawy</label>
         <input id="deliveryAddress" type="text" placeholder="Wpisz adres dostawy ręcznie">
-        <div class="notice">To pole jest do wpisywania ręcznie. Po wyborze klienta podstawia się jego miejscowość, ale możesz ją zmienić.</div>
+        <div class="notice">To pole możesz zmieniać ręcznie.</div>
       </div>
     </div>
     <div class="actions">
@@ -154,39 +188,18 @@ textarea#offerBox{min-height:240px}
     <h3 class="section-title">Dodaj klienta</h3>
     <input type="hidden" id="editingClientId">
     <div class="grid">
-      <div>
-        <label>Nazwa</label>
-        <input id="cname">
-      </div>
-      <div>
-        <label>Telefon</label>
-        <input id="cphone">
-      </div>
-      <div>
-        <label>Miejscowość</label>
-        <input id="caddress">
-      </div>
+      <div><label>Nazwa</label><input id="cname"></div>
+      <div><label>Telefon</label><input id="cphone"></div>
+      <div><label>Miejscowość</label><input id="caddress"></div>
       <div>
         <label>Segment</label>
-        <select id="csegment">
-          <option>A</option>
-          <option selected>B</option>
-          <option>C</option>
-        </select>
+        <select id="csegment"><option>A</option><option selected>B</option><option>C</option></select>
       </div>
       <div>
         <label>Etap</label>
-        <select id="cstage">
-          <option>Nowy lead</option>
-          <option>Po kontakcie</option>
-          <option>Oferta wysłana</option>
-          <option>Stały klient</option>
-        </select>
+        <select id="cstage"><option>Nowy lead</option><option>Po kontakcie</option><option>Oferta wysłana</option><option>Stały klient</option></select>
       </div>
-      <div>
-        <label>Następny kontakt</label>
-        <input id="cnext" type="text">
-      </div>
+      <div><label>Następny kontakt</label><input id="cnext" type="text"></div>
     </div>
     <label>Notatki</label>
     <textarea id="cnotes"></textarea>
@@ -200,18 +213,10 @@ textarea#offerBox{min-height:240px}
   <div id="clientsListCard" class="card hidden">
     <h3 class="section-title">Lista klientów</h3>
     <div class="grid">
-      <div>
-        <label>Szukaj</label>
-        <input id="clientSearch" type="text" oninput="renderClients()" placeholder="Szukaj po nazwie, telefonie lub mieście">
-      </div>
+      <div><label>Szukaj</label><input id="clientSearch" type="text" oninput="renderClients()" placeholder="Szukaj po nazwie, telefonie lub mieście"></div>
       <div>
         <label>Filtr segment</label>
-        <select id="clientSegmentFilter" onchange="renderClients()">
-          <option value="">Wszystkie</option>
-          <option value="A">A</option>
-          <option value="B">B</option>
-          <option value="C">C</option>
-        </select>
+        <select id="clientSegmentFilter" onchange="renderClients()"><option value="">Wszystkie</option><option value="A">A</option><option value="B">B</option><option value="C">C</option></select>
       </div>
     </div>
     <div id="clientsList"></div>
@@ -220,14 +225,8 @@ textarea#offerBox{min-height:240px}
   <div id="prices" class="card hidden">
     <h3 class="section-title">Cennik kopalni</h3>
     <div class="grid">
-      <div>
-        <label>Kopalnia</label>
-        <select id="priceQuarry" onchange="renderPriceEditor()"></select>
-      </div>
-      <div>
-        <label>Stawka transportu zł/km</label>
-        <input id="priceRate" type="number">
-      </div>
+      <div><label>Kopalnia</label><select id="priceQuarry" onchange="renderPriceEditor()"></select></div>
+      <div><label>Stawka transportu zł/km</label><input id="priceRate" type="number"></div>
     </div>
     <div id="priceEditor"></div>
     <div class="actions">
@@ -257,8 +256,7 @@ const defaultData = {
     "Kruszywo grube 2/8 mm":75,"Kruszywo grube 8/16 mm":75,"Kruszywo grube 2/16 mm":75,"Kruszywo grube 63/200 mm (otoczaki)":77,"Kruszywo drobne 0/0,5 mm gat. II":15,"Kruszywo drobne 0/2 mm":36,"Kruszywo o ciągłym uziarnieniu 0/31,5 mm (surowiec)":54,"Kruszywo o ciągłym uziarnieniu 0/31,5 mm (kruszone)":57}},
   "Stawy Monowskie": {rate:6.0, products:{
     "Kruszywo grube 2/16 mm":74,"Kruszywo grube 16/63 mm gat. II":61,"Kruszywo drobne 0/0,5 mm gat. II":15,"Kruszywo drobne 0/2 mm":36,"Kruszywo o ciągłym uziarnieniu 0/31,5 mm (surowiec)":47}},
-  "Dwory": {rate:6.0, products:{
-    "Kruszywo o ciągłym uziarnieniu gat. II":40}},
+  "Dwory": {rate:6.0, products:{"Kruszywo o ciągłym uziarnieniu gat. II":40}},
   "Kończyce": {rate:6.2, products:{
     "Kruszywo grube 2/8 mm":75,"Kruszywo grube 8/16 mm":75,"Kruszywo grube 2/16 mm":75,"Kruszywo grube 16/63 mm gat. II":61,"Kruszywo drobne 0/0,5 mm gat. II":16,"Kruszywo drobne 0/2 mm":44,"Kruszywo o ciągłym uziarnieniu 0/31,5 mm (surowiec)":50,"Kruszywo o ciągłym uziarnieniu 0/31,5 mm (kruszone)":60}},
   "Niepołomice": {rate:5.8, products:{
@@ -271,15 +269,15 @@ const defaultData = {
     "Kruszywo grube 2/8 mm":74,"Kruszywo grube 8/16 mm":74,"Kruszywo grube 16/63 mm gat. II":61,"Kruszywo drobne 0/2 mm":36,"Ziemia nadkładowa gat. I":25}}
 };
 
-let clients = JSON.parse(localStorage.getItem("clients_v18") || "null") || [
+let clients = JSON.parse(localStorage.getItem("clients_v19") || "null") || [
   {id:Date.now()+1,name:"Amper",phone:"45262737373",address:"Oświęcim",segment:"B",stage:"Stały klient",nextContact:"",notes:""},
 ];
-let priceData = JSON.parse(localStorage.getItem("priceData_v18") || "null") || defaultData;
-let quotes = JSON.parse(localStorage.getItem("quotes_v18") || "[]");
+let priceData = JSON.parse(localStorage.getItem("priceData_v19") || "null") || defaultData;
+let quotes = JSON.parse(localStorage.getItem("quotes_v19") || "[]");
 
-function persistClients(){ localStorage.setItem("clients_v18", JSON.stringify(clients)); }
-function persistPrices(){ localStorage.setItem("priceData_v18", JSON.stringify(priceData)); }
-function persistQuotes(){ localStorage.setItem("quotes_v18", JSON.stringify(quotes)); }
+function persistClients(){ localStorage.setItem("clients_v19", JSON.stringify(clients)); }
+function persistPrices(){ localStorage.setItem("priceData_v19", JSON.stringify(priceData)); }
+function persistQuotes(){ localStorage.setItem("quotes_v19", JSON.stringify(quotes)); }
 
 function show(id){
   document.querySelectorAll(".card").forEach(c=>c.classList.add("hidden"));
@@ -295,15 +293,17 @@ function show(id){
 }
 
 function fillSelectors(){
-  quarry.innerHTML = "";
+  quarry.innerHTML = ""; quickQuarry.innerHTML = "";
   priceQuarry.innerHTML = "";
   historyQuarryFilter.innerHTML = '<option value="">Wszystkie kopalnie</option>';
   Object.keys(priceData).forEach(q=>{
     quarry.innerHTML += `<option value="${q}">${q}</option>`;
+    quickQuarry.innerHTML += `<option value="${q}">${q}</option>`;
     priceQuarry.innerHTML += `<option value="${q}">${q}</option>`;
     historyQuarryFilter.innerHTML += `<option value="${q}">${q}</option>`;
   });
   renderProducts(true);
+  renderQuickProducts(true);
   renderClientChoices();
 }
 
@@ -316,6 +316,17 @@ function renderProducts(forceFirst=false){
   if(!items.length) return;
   if(!forceFirst && items.includes(current)) product.value = current;
   else product.selectedIndex = 0;
+}
+
+function renderQuickProducts(forceFirst=false){
+  const q = quickQuarry.value || Object.keys(priceData)[0];
+  const current = quickProduct.value;
+  const items = Object.keys(priceData[q].products);
+  quickProduct.innerHTML = "";
+  items.forEach(x => quickProduct.innerHTML += `<option value="${x}">${x}</option>`);
+  if(!items.length) return;
+  if(!forceFirst && items.includes(current)) quickProduct.value = current;
+  else quickProduct.selectedIndex = 0;
 }
 
 function renderClientChoices(){
@@ -337,54 +348,65 @@ function useClientForCalc(){
   deliveryAddress.value = c.address || "";
 }
 
-function onQuarryChange(){
-  renderProducts(true);
-  syncPrice();
-}
+function onQuarryChange(){ renderProducts(true); syncPrice(); }
+function onQuickQuarryChange(){ renderQuickProducts(true); syncQuickPrice(); }
 
 function syncPrice(){
-  const q = quarry.value;
-  const p = product.value;
+  const q = quarry.value, p = product.value;
   if(priceData[q] && priceData[q].products[p] !== undefined){
     price.value = priceData[q].products[p];
     rate.value = priceData[q].rate;
   }
 }
 
+function syncQuickPrice(){
+  const q = quickQuarry.value, p = quickProduct.value;
+  if(priceData[q] && priceData[q].products[p] !== undefined){
+    quickPrice.value = priceData[q].products[p];
+    quickRate.value = priceData[q].rate;
+  }
+}
+
+function calcCore(priceVal, kmVal, rateVal, loadVal, marginVal, qtyVal){
+  const course = kmVal * rateVal * 2;
+  const transport = course / Math.max(loadVal,1);
+  const final = priceVal + transport + marginVal;
+  const value = final * qtyVal;
+  return {course, transport, final, value};
+}
+
+function calcQuick(){
+  const p = Number(quickPrice.value || 0);
+  const k = Number(quickKm.value || 0);
+  const r = Number(quickRate.value || 0);
+  const l = Number(quickLoad.value || 1);
+  const m = Number(quickMargin.value || 0);
+  const q = Number(quickQty.value || 0);
+  const res = calcCore(p,k,r,l,m,q);
+  quickResult.innerHTML = `Cena końcowa: ${res.final.toFixed(2)} zł/t<br>Wartość zamówienia: ${res.value.toFixed(2)} zł`;
+}
+
 function calc(){
-  const p = Number(price.value || 0);
-  const k = Number(km.value || 0);
-  const r = Number(rate.value || 0);
-  const l = Math.max(Number(load.value || 1),1);
-  const m = Number(margin.value || 0);
-  const q = Number(qty.value || 0);
-  const course = k * r * 2;
-  const transport = course / l;
-  const final = p + transport + m;
-  const value = final * q;
-  result.innerHTML = `Cena końcowa: ${final.toFixed(2)} zł/t<br>Wartość zamówienia: ${value.toFixed(2)} zł`;
+  const p = Number(price.value || 0), k = Number(km.value || 0), r = Number(rate.value || 0),
+        l = Number(load.value || 1), m = Number(margin.value || 0), q = Number(qty.value || 0);
+  const res = calcCore(p,k,r,l,m,q);
+  result.innerHTML = `Cena końcowa: ${res.final.toFixed(2)} zł/t<br>Wartość zamówienia: ${res.value.toFixed(2)} zł`;
   const txt = [
     "Oferta kruszywa",
     `Kopalnia: ${quarry.value}`,
     `Towar: ${product.value}`,
     `Cena na kopalni: ${p.toFixed(2)} zł/t`,
-    `Transport: ${transport.toFixed(2)} zł/t`,
-    `Cena końcowa: ${final.toFixed(2)} zł/t`,
+    `Transport: ${res.transport.toFixed(2)} zł/t`,
+    `Cena końcowa: ${res.final.toFixed(2)} zł/t`,
     `Ilość: ${q} t`,
-    `Wartość: ${value.toFixed(2)} zł`,
+    `Wartość: ${res.value.toFixed(2)} zł`,
     clientName.value ? `Klient: ${clientName.value}` : "",
     clientPhone.value ? `Telefon: ${clientPhone.value}` : "",
     deliveryAddress.value ? `Adres dostawy: ${deliveryAddress.value}` : ""
   ].filter(Boolean).join("\n");
   offerBox.value = txt;
-  updateMsgLinks(txt);
-  return {final, value, offer: txt};
-}
-
-function updateMsgLinks(text){
-  smsBtn.href = "#";
-  waBtn.href = "#";
   offerInfo.textContent = "SMS i WhatsApp możesz uzupełnić ręcznie numerem telefonu.";
+  return {final: res.final, value: res.value, offer: txt};
 }
 
 function saveQuote(){
@@ -417,15 +439,7 @@ function renderHistory(){
     const idx = quotes.findIndex(x => x.id === item.id);
     const div = document.createElement("div");
     div.className = "quote";
-    div.innerHTML = `
-      <b>${item.date}</b><br>
-      <span class="small">${item.quarry} | ${item.product}</span><br>
-      <span class="small">Cena końcowa: ${item.final.toFixed(2)} zł/t | Wartość: ${item.value.toFixed(2)} zł</span><br>
-      <span class="small">${item.client || ""} | ${item.phone || ""} | ${item.address || ""}</span>
-      <div class="client-actions">
-        <button class="secondary" onclick="loadQuote(${idx})">Wczytaj</button>
-        <button class="secondary" onclick="deleteQuote(${idx})">Usuń</button>
-      </div>`;
+    div.innerHTML = `<b>${item.date}</b><br><span class="small">${item.quarry} | ${item.product}</span><br><span class="small">Cena końcowa: ${item.final.toFixed(2)} zł/t | Wartość: ${item.value.toFixed(2)} zł</span><br><span class="small">${item.client || ""} | ${item.phone || ""} | ${item.address || ""}</span><div class="client-actions"><button class="secondary" onclick="loadQuote(${idx})">Wczytaj</button><button class="secondary" onclick="deleteQuote(${idx})">Usuń</button></div>`;
     historyList.appendChild(div);
   });
 }
@@ -445,11 +459,7 @@ function loadQuote(i){
   show('calc');
 }
 
-function deleteQuote(i){
-  quotes.splice(i,1);
-  persistQuotes();
-  renderHistory();
-}
+function deleteQuote(i){ quotes.splice(i,1); persistQuotes(); renderHistory(); }
 
 function clearQuote(){
   savedClient.value = "";
@@ -481,14 +491,12 @@ function saveClientForm(){
     notes: cnotes.value.trim()
   };
   if(!data.name) return;
-
   if(editingId){
     const idx = clients.findIndex(c => c.id === editingId);
     if(idx !== -1) clients[idx] = data;
   } else {
     clients.unshift(data);
   }
-
   persistClients();
   resetClientForm();
   renderClients();
@@ -534,19 +542,7 @@ function renderClients(){
     const idx = clients.findIndex(x => x.id === c.id);
     const div = document.createElement("div");
     div.className = "client-row";
-    div.innerHTML = `
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-        <div style="font-size:26px;font-weight:800">${c.name}</div>
-        <span class="badge">${c.segment}</span>
-      </div>
-      <div class="small" style="font-size:18px;margin-top:4px">${c.phone || "-"} | ${c.address || "-"}</div>
-      <div class="small" style="font-size:18px">Etap: ${c.stage || "-"} | Następny kontakt: ${c.nextContact || "-"}</div>
-      <div class="client-actions">
-        <button class="secondary" onclick="advanceClient(${idx})">Następny etap</button>
-        <button class="secondary" onclick="useClientDirect(${idx})">Do kalkulatora</button>
-        <button class="secondary" onclick="editClient(${idx})">Edytuj</button>
-        <button class="secondary" onclick="deleteClient(${idx})">Usuń</button>
-      </div>`;
+    div.innerHTML = `<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><div style="font-size:26px;font-weight:800">${c.name}</div><span class="badge">${c.segment}</span></div><div class="small" style="font-size:18px;margin-top:4px">${c.phone || "-"} | ${c.address || "-"}</div><div class="small" style="font-size:18px">Etap: ${c.stage || "-"} | Następny kontakt: ${c.nextContact || "-"}</div><div class="client-actions"><button class="secondary" onclick="advanceClient(${idx})">Następny etap</button><button class="secondary" onclick="useClientDirect(${idx})">Do kalkulatora</button><button class="secondary" onclick="editClient(${idx})">Edytuj</button><button class="secondary" onclick="deleteClient(${idx})">Usuń</button></div>`;
     clientsList.appendChild(div);
   });
 }
@@ -577,9 +573,7 @@ function deleteClient(i){
   renderClientChoices();
 }
 
-function addTaskPlaceholder(){
-  alert("Przycisk zostawiony pod przyszły moduł zadań.");
-}
+function addTaskPlaceholder(){ alert("Przycisk zostawiony pod przyszły moduł zadań."); }
 
 function renderPriceEditor(){
   const q = priceQuarry.value;
@@ -607,6 +601,7 @@ function savePrices(){
   });
   persistPrices();
   syncPrice();
+  syncQuickPrice();
   alert("Cennik zapisany");
 }
 
@@ -616,6 +611,7 @@ function resetPrices(){
   fillSelectors();
   renderPriceEditor();
   syncPrice();
+  syncQuickPrice();
   alert("Przywrócono domyślny cennik");
 }
 
@@ -640,6 +636,7 @@ function importPrices(){
       fillSelectors();
       renderPriceEditor();
       syncPrice();
+      syncQuickPrice();
       alert("Cennik wczytany");
     }catch{
       alert("Nie udało się wczytać pliku cennika");
@@ -662,7 +659,8 @@ fillSelectors();
 renderClients();
 renderHistory();
 syncPrice();
-updateMsgLinks("");
+syncQuickPrice();
+show('quick');
 if ('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js'); }
 </script>
 </body>

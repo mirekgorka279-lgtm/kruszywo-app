@@ -1,7 +1,7 @@
 {
   "name": "Kalkulator kruszywa",
   "short_name": "Kruszywo",
-  "start_url": "index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#232323",
