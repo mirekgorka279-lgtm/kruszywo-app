@@ -1,18 +1,4 @@
-
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open('kruszywo-app-v19').then(cache => cache.addAll([
-      './',
-      './index.html',
-      './manifest.json',
-      './icon-192.png',
-      './icon-512.png',
-      './logo.png'
-    ]))
-  );
-});
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request).then(resp => resp || fetch(event.request))
-  );
-});
+const CACHE_NAME='kruszywo-app-v21b';
+self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png'])));self.skipWaiting();});
+self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)))));self.clients.claim();});
+self.addEventListener('fetch',e=>{e.respondWith(caches.match(e.request,{ignoreSearch:true}).then(r=>r||fetch(e.request)));});

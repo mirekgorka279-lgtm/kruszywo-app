@@ -10,8 +10,7 @@
 body{font-family:-apple-system,Arial,sans-serif;margin:0;background:#f4f6f8;color:#101828}
 .header{background:#232323;color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:16px}
 .header-title{font-size:20px;font-weight:700}
-.header-brand{display:flex;align-items:center;gap:10px;min-width:max-content}
-.header-brand img{height:42px;width:auto;display:block}
+.header-brand{font-size:18px;font-weight:700}
 .wrap{max-width:1160px;margin:auto;padding:16px}
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px}
 .tile{background:#fff;padding:22px;border-radius:14px;box-shadow:0 4px 12px rgba(0,0,0,.08);text-align:center;font-weight:700;cursor:pointer}
@@ -34,18 +33,13 @@ textarea#offerBox{min-height:240px}
 .client-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
 .notice{font-size:13px;color:#667085;margin-top:-2px;margin-bottom:10px}
 .result-box{font-size:18px;font-weight:700;margin-top:8px}
-@media (max-width:900px){
-  .grid,.grid3,.grid4{grid-template-columns:1fr}
-  .header{align-items:flex-start}
-}
+@media (max-width:900px){.grid,.grid3,.grid4{grid-template-columns:1fr}.header{align-items:flex-start}}
 </style>
 </head>
 <body>
 <div class="header">
   <div class="header-title">Kalkulator kruszywa</div>
-  <div class="header-brand">
-    <img src="logo.png" alt="Logo">
-  </div>
+  <div class="header-brand">Kruszywo SA</div>
 </div>
 
 <div class="wrap">
@@ -61,103 +55,36 @@ textarea#offerBox{min-height:240px}
   <div id="quick" class="card">
     <h3 class="section-title">Szybka wycena</h3>
     <div class="grid">
-      <div>
-        <label>Kopalnia</label>
-        <select id="quickQuarry" onchange="onQuickQuarryChange()"></select>
-      </div>
-      <div>
-        <label>Towar / frakcja</label>
-        <select id="quickProduct" onchange="syncQuickPrice()"></select>
-      </div>
-      <div>
-        <label>Cena z kopalni</label>
-        <input id="quickPrice" type="number">
-      </div>
-      <div>
-        <label>Kilometry</label>
-        <input id="quickKm" type="number" value="20">
-      </div>
-      <div>
-        <label>Stawka transportu</label>
-        <input id="quickRate" type="number">
-      </div>
-      <div>
-        <label>Ładowność auta</label>
-        <input id="quickLoad" type="number" value="25">
-      </div>
-      <div>
-        <label>Marża</label>
-        <input id="quickMargin" type="number" value="3">
-      </div>
-      <div>
-        <label>Ilość ton</label>
-        <input id="quickQty" type="number" value="25">
-      </div>
+      <div><label>Kopalnia</label><select id="quickQuarry" onchange="onQuickQuarryChange()"></select></div>
+      <div><label>Towar / frakcja</label><select id="quickProduct" onchange="syncQuickPrice()"></select></div>
+      <div><label>Cena z kopalni</label><input id="quickPrice" type="number"></div>
+      <div><label>Kilometry</label><input id="quickKm" type="number" value="20"></div>
+      <div><label>Stawka transportu</label><input id="quickRate" type="number"></div>
+      <div><label>Ładowność auta</label><input id="quickLoad" type="number" value="25"></div>
+      <div><label>Marża</label><input id="quickMargin" type="number" value="3"></div>
+      <div><label>Ilość ton</label><input id="quickQty" type="number" value="25"></div>
     </div>
-    <div class="actions">
-      <button onclick="calcQuick()">Policz</button>
-    </div>
+    <div class="actions"><button onclick="calcQuick()">Policz</button></div>
     <div id="quickResult" class="result-box"></div>
   </div>
 
   <div id="calc" class="card hidden">
     <h3 class="section-title">Kalkulator ceny</h3>
     <div class="grid">
-      <div>
-        <label>Wybierz klienta</label>
-        <select id="savedClient" onchange="useClientForCalc()"><option value="">-- wybierz klienta --</option></select>
-      </div>
-      <div>
-        <label>Kopalnia</label>
-        <select id="quarry" onchange="onQuarryChange()"></select>
-      </div>
-      <div>
-        <label>Towar / frakcja</label>
-        <select id="product" onchange="syncPrice()"></select>
-      </div>
-      <div>
-        <label>Cena na kopalni zł/t</label>
-        <input id="price" type="number">
-      </div>
-      <div>
-        <label>Kilometry (1 strona)</label>
-        <input id="km" type="number" value="20">
-      </div>
-      <div>
-        <label>Stawka transportu zł/km</label>
-        <input id="rate" type="number">
-      </div>
-      <div>
-        <label>Ładowność auta t</label>
-        <input id="load" type="number" value="25">
-      </div>
-      <div>
-        <label>Marża zł/t</label>
-        <input id="margin" type="number" value="3">
-      </div>
-      <div>
-        <label>Ilość ton</label>
-        <input id="qty" type="number" value="25">
-      </div>
-      <div>
-        <label>Klient</label>
-        <input id="clientName" type="text">
-      </div>
-      <div>
-        <label>Telefon</label>
-        <input id="clientPhone" type="text">
-      </div>
-      <div>
-        <label>Adres dostawy</label>
-        <input id="deliveryAddress" type="text" placeholder="Wpisz adres dostawy ręcznie">
-        <div class="notice">To pole możesz zmieniać ręcznie.</div>
-      </div>
+      <div><label>Wybierz klienta</label><select id="savedClient" onchange="useClientForCalc()"><option value="">-- wybierz klienta --</option></select></div>
+      <div><label>Kopalnia</label><select id="quarry" onchange="onQuarryChange()"></select></div>
+      <div><label>Towar / frakcja</label><select id="product" onchange="syncPrice()"></select></div>
+      <div><label>Cena na kopalni zł/t</label><input id="price" type="number"></div>
+      <div><label>Kilometry (1 strona)</label><input id="km" type="number" value="20"></div>
+      <div><label>Stawka transportu zł/km</label><input id="rate" type="number"></div>
+      <div><label>Ładowność auta t</label><input id="load" type="number" value="25"></div>
+      <div><label>Marża zł/t</label><input id="margin" type="number" value="3"></div>
+      <div><label>Ilość ton</label><input id="qty" type="number" value="25"></div>
+      <div><label>Klient</label><input id="clientName" type="text"></div>
+      <div><label>Telefon</label><input id="clientPhone" type="text"></div>
+      <div><label>Adres dostawy</label><input id="deliveryAddress" type="text" placeholder="Wpisz adres dostawy ręcznie"><div class="notice">To pole możesz zmieniać ręcznie.</div></div>
     </div>
-    <div class="actions">
-      <button onclick="calc()">Policz</button>
-      <button class="secondary" onclick="saveQuote()">Zapisz wycenę</button>
-      <button class="secondary" onclick="clearQuote()">Nowa wycena / Wyczyść</button>
-    </div>
+    <div class="actions"><button onclick="calc()">Policz</button><button class="secondary" onclick="saveQuote()">Zapisz wycenę</button><button class="secondary" onclick="clearQuote()">Nowa wycena / Wyczyść</button></div>
     <p id="result"></p>
     <p class="small">Podaj kilometry w jedną stronę. Kalkulator liczy transport w obie strony.</p>
   </div>
@@ -165,21 +92,9 @@ textarea#offerBox{min-height:240px}
   <div id="history" class="card hidden">
     <h3 class="section-title">Historia wycen</h3>
     <div class="grid3">
-      <div>
-        <label>Szukaj po kliencie</label>
-        <input id="historyClientSearch" type="text" oninput="renderHistory()" placeholder="np. Oświęcim, Amper">
-      </div>
-      <div>
-        <label>Filtr kopalni</label>
-        <select id="historyQuarryFilter" onchange="renderHistory()"><option value="">Wszystkie kopalnie</option></select>
-      </div>
-      <div>
-        <label>Sortowanie</label>
-        <select id="historySort" onchange="renderHistory()">
-          <option value="newest">Od najnowszych</option>
-          <option value="oldest">Od najstarszych</option>
-        </select>
-      </div>
+      <div><label>Szukaj po kliencie</label><input id="historyClientSearch" type="text" oninput="renderHistory()" placeholder="np. Oświęcim, Amper"></div>
+      <div><label>Filtr kopalni</label><select id="historyQuarryFilter" onchange="renderHistory()"><option value="">Wszystkie kopalnie</option></select></div>
+      <div><label>Sortowanie</label><select id="historySort" onchange="renderHistory()"><option value="newest">Od najnowszych</option><option value="oldest">Od najstarszych</option></select></div>
     </div>
     <div id="historyList"></div>
   </div>
@@ -191,33 +106,19 @@ textarea#offerBox{min-height:240px}
       <div><label>Nazwa</label><input id="cname"></div>
       <div><label>Telefon</label><input id="cphone"></div>
       <div><label>Miejscowość</label><input id="caddress"></div>
-      <div>
-        <label>Segment</label>
-        <select id="csegment"><option>A</option><option selected>B</option><option>C</option></select>
-      </div>
-      <div>
-        <label>Etap</label>
-        <select id="cstage"><option>Nowy lead</option><option>Po kontakcie</option><option>Oferta wysłana</option><option>Stały klient</option></select>
-      </div>
+      <div><label>Segment</label><select id="csegment"><option>A</option><option selected>B</option><option>C</option></select></div>
+      <div><label>Etap</label><select id="cstage"><option>Nowy lead</option><option>Po kontakcie</option><option>Oferta wysłana</option><option>Stały klient</option></select></div>
       <div><label>Następny kontakt</label><input id="cnext" type="text"></div>
     </div>
-    <label>Notatki</label>
-    <textarea id="cnotes"></textarea>
-    <div class="actions">
-      <button id="saveClientBtn" onclick="saveClientForm()">Dodaj klienta</button>
-      <button class="secondary" onclick="resetClientForm()">Wyczyść formularz</button>
-      <button class="secondary" onclick="addTaskPlaceholder()">Dodaj zadanie</button>
-    </div>
+    <label>Notatki</label><textarea id="cnotes"></textarea>
+    <div class="actions"><button id="saveClientBtn" onclick="saveClientForm()">Dodaj klienta</button><button class="secondary" onclick="resetClientForm()">Wyczyść formularz</button><button class="secondary" onclick="addTaskPlaceholder()">Dodaj zadanie</button></div>
   </div>
 
   <div id="clientsListCard" class="card hidden">
     <h3 class="section-title">Lista klientów</h3>
     <div class="grid">
       <div><label>Szukaj</label><input id="clientSearch" type="text" oninput="renderClients()" placeholder="Szukaj po nazwie, telefonie lub mieście"></div>
-      <div>
-        <label>Filtr segment</label>
-        <select id="clientSegmentFilter" onchange="renderClients()"><option value="">Wszystkie</option><option value="A">A</option><option value="B">B</option><option value="C">C</option></select>
-      </div>
+      <div><label>Filtr segment</label><select id="clientSegmentFilter" onchange="renderClients()"><option value="">Wszystkie</option><option value="A">A</option><option value="B">B</option><option value="C">C</option></select></div>
     </div>
     <div id="clientsList"></div>
   </div>
@@ -229,439 +130,69 @@ textarea#offerBox{min-height:240px}
       <div><label>Stawka transportu zł/km</label><input id="priceRate" type="number"></div>
     </div>
     <div id="priceEditor"></div>
-    <div class="actions">
-      <button onclick="savePrices()">Zapisz cennik</button>
-      <button class="secondary" onclick="resetPrices()">Reset</button>
-      <button class="secondary" onclick="exportPrices()">Eksport cennika</button>
-      <input type="file" id="importFile" onchange="importPrices()">
-    </div>
+    <div class="actions"><button onclick="savePrices()">Zapisz cennik</button><button class="secondary" onclick="resetPrices()">Reset</button><button class="secondary" onclick="exportPrices()">Eksport cennika</button><input type="file" id="importFile" onchange="importPrices()"></div>
   </div>
 
   <div id="offer" class="card hidden">
     <h3 class="section-title">Oferta</h3>
     <textarea id="offerBox"></textarea>
-    <div class="actions">
-      <button onclick="copyOffer()">Kopiuj</button>
-      <button onclick="printOffer()">Drukuj / PDF</button>
-      <a id="smsBtn" class="btn secondary" href="#">Wyślij SMS</a>
-      <a id="waBtn" class="btn secondary" href="#" target="_blank" rel="noreferrer">Wyślij WhatsApp</a>
-    </div>
+    <div class="actions"><button onclick="copyOffer()">Kopiuj</button><button onclick="printOffer()">Drukuj / PDF</button><a id="smsBtn" class="btn secondary" href="#">Wyślij SMS</a><a id="waBtn" class="btn secondary" href="#" target="_blank" rel="noreferrer">Wyślij WhatsApp</a></div>
     <p id="offerInfo" class="small"></p>
   </div>
 </div>
 
 <script>
 const defaultData = {
-  "Rajsko": {rate:6.0, products:{
-    "Kruszywo grube 2/8 mm":75,"Kruszywo grube 8/16 mm":75,"Kruszywo grube 2/16 mm":75,"Kruszywo grube 63/200 mm (otoczaki)":77,"Kruszywo drobne 0/0,5 mm gat. II":15,"Kruszywo drobne 0/2 mm":36,"Kruszywo o ciągłym uziarnieniu 0/31,5 mm (surowiec)":54,"Kruszywo o ciągłym uziarnieniu 0/31,5 mm (kruszone)":57}},
-  "Stawy Monowskie": {rate:6.0, products:{
-    "Kruszywo grube 2/16 mm":74,"Kruszywo grube 16/63 mm gat. II":61,"Kruszywo drobne 0/0,5 mm gat. II":15,"Kruszywo drobne 0/2 mm":36,"Kruszywo o ciągłym uziarnieniu 0/31,5 mm (surowiec)":47}},
+  "Rajsko": {rate:6.0, products:{"Kruszywo grube 2/8 mm":75,"Kruszywo grube 8/16 mm":75,"Kruszywo grube 2/16 mm":75,"Kruszywo grube 63/200 mm (otoczaki)":77,"Kruszywo drobne 0/0,5 mm gat. II":15,"Kruszywo drobne 0/2 mm":36,"Kruszywo o ciągłym uziarnieniu 0/31,5 mm (surowiec)":54,"Kruszywo o ciągłym uziarnieniu 0/31,5 mm (kruszone)":57}},
+  "Stawy Monowskie": {rate:6.0, products:{"Kruszywo grube 2/16 mm":74,"Kruszywo grube 16/63 mm gat. II":61,"Kruszywo drobne 0/0,5 mm gat. II":15,"Kruszywo drobne 0/2 mm":36,"Kruszywo o ciągłym uziarnieniu 0/31,5 mm (surowiec)":47}},
   "Dwory": {rate:6.0, products:{"Kruszywo o ciągłym uziarnieniu gat. II":40}},
-  "Kończyce": {rate:6.2, products:{
-    "Kruszywo grube 2/8 mm":75,"Kruszywo grube 8/16 mm":75,"Kruszywo grube 2/16 mm":75,"Kruszywo grube 16/63 mm gat. II":61,"Kruszywo drobne 0/0,5 mm gat. II":16,"Kruszywo drobne 0/2 mm":44,"Kruszywo o ciągłym uziarnieniu 0/31,5 mm (surowiec)":50,"Kruszywo o ciągłym uziarnieniu 0/31,5 mm (kruszone)":60}},
-  "Niepołomice": {rate:5.8, products:{
-    "Kruszywo grube 2/16 mm":74,"Kruszywo grube 16/63 mm gat. II":64,"Kruszywo drobne 0/0,5 mm gat. II":15,"Kruszywo drobne 0/2 mm":34,"Kruszywo o ciągłym uziarnieniu 0/31,5 mm (surowiec)":40,"Kruszywo o ciągłym uziarnieniu gat. II":30}},
-  "Zakole A": {rate:6.1, products:{
-    "Kruszywo grube 2/16 mm":74,"Kruszywo grube 16/63 mm gat. II":61,"Kruszywo drobne 0/0,5 mm gat. II":15,"Kruszywo drobne 0/2 mm":35,"Kruszywo o ciągłym uziarnieniu 0/31,5 mm (surowiec)":47}},
-  "Zakole B": {rate:6.1, products:{
-    "Kruszywo grube 2/8 mm":74,"Kruszywo grube 8/16 mm":74,"Kruszywo drobne 0/2 mm":35,"Kruszywo o ciągłym uziarnieniu 0/45 mm (surowiec)":47}},
-  "Zator – Podolsze Nowe": {rate:6.0, products:{
-    "Kruszywo grube 2/8 mm":74,"Kruszywo grube 8/16 mm":74,"Kruszywo grube 16/63 mm gat. II":61,"Kruszywo drobne 0/2 mm":36,"Ziemia nadkładowa gat. I":25}}
+  "Kończyce": {rate:6.2, products:{"Kruszywo grube 2/8 mm":75,"Kruszywo grube 8/16 mm":75,"Kruszywo grube 2/16 mm":75,"Kruszywo grube 16/63 mm gat. II":61,"Kruszywo drobne 0/0,5 mm gat. II":16,"Kruszywo drobne 0/2 mm":44,"Kruszywo o ciągłym uziarnieniu 0/31,5 mm (surowiec)":50,"Kruszywo o ciągłym uziarnieniu 0/31,5 mm (kruszone)":60}},
+  "Niepołomice": {rate:5.8, products:{"Kruszywo grube 2/16 mm":74,"Kruszywo grube 16/63 mm gat. II":64,"Kruszywo drobne 0/0,5 mm gat. II":15,"Kruszywo drobne 0/2 mm":34,"Kruszywo o ciągłym uziarnieniu 0/31,5 mm (surowiec)":40,"Kruszywo o ciągłym uziarnieniu gat. II":30}},
+  "Zakole A": {rate:6.1, products:{"Kruszywo grube 2/16 mm":74,"Kruszywo grube 16/63 mm gat. II":61,"Kruszywo drobne 0/0,5 mm gat. II":15,"Kruszywo drobne 0/2 mm":35,"Kruszywo o ciągłym uziarnieniu 0/31,5 mm (surowiec)":47}},
+  "Zakole B": {rate:6.1, products:{"Kruszywo grube 2/8 mm":74,"Kruszywo grube 8/16 mm":74,"Kruszywo drobne 0/2 mm":35,"Kruszywo o ciągłym uziarnieniu 0/45 mm (surowiec)":47}},
+  "Zator – Podolsze Nowe": {rate:6.0, products:{"Kruszywo grube 2/8 mm":74,"Kruszywo grube 8/16 mm":74,"Kruszywo grube 16/63 mm gat. II":61,"Kruszywo drobne 0/2 mm":36,"Ziemia nadkładowa gat. I":25}}
 };
-
-let clients = JSON.parse(localStorage.getItem("clients_v19") || "null") || [
-  {id:Date.now()+1,name:"Amper",phone:"45262737373",address:"Oświęcim",segment:"B",stage:"Stały klient",nextContact:"",notes:""},
-];
-let priceData = JSON.parse(localStorage.getItem("priceData_v19") || "null") || defaultData;
-let quotes = JSON.parse(localStorage.getItem("quotes_v19") || "[]");
-
-function persistClients(){ localStorage.setItem("clients_v19", JSON.stringify(clients)); }
-function persistPrices(){ localStorage.setItem("priceData_v19", JSON.stringify(priceData)); }
-function persistQuotes(){ localStorage.setItem("quotes_v19", JSON.stringify(quotes)); }
-
-function show(id){
-  document.querySelectorAll(".card").forEach(c=>c.classList.add("hidden"));
-  if(id==="clients"){
-    document.getElementById("clients").classList.remove("hidden");
-    document.getElementById("clientsListCard").classList.remove("hidden");
-  } else {
-    document.getElementById(id).classList.remove("hidden");
-  }
-  if(id==="history") renderHistory();
-  if(id==="prices") renderPriceEditor();
-  if(id==="clients") renderClients();
-}
-
-function fillSelectors(){
-  quarry.innerHTML = ""; quickQuarry.innerHTML = "";
-  priceQuarry.innerHTML = "";
-  historyQuarryFilter.innerHTML = '<option value="">Wszystkie kopalnie</option>';
-  Object.keys(priceData).forEach(q=>{
-    quarry.innerHTML += `<option value="${q}">${q}</option>`;
-    quickQuarry.innerHTML += `<option value="${q}">${q}</option>`;
-    priceQuarry.innerHTML += `<option value="${q}">${q}</option>`;
-    historyQuarryFilter.innerHTML += `<option value="${q}">${q}</option>`;
-  });
-  renderProducts(true);
-  renderQuickProducts(true);
-  renderClientChoices();
-}
-
-function renderProducts(forceFirst=false){
-  const q = quarry.value || Object.keys(priceData)[0];
-  const current = product.value;
-  const items = Object.keys(priceData[q].products);
-  product.innerHTML = "";
-  items.forEach(x => product.innerHTML += `<option value="${x}">${x}</option>`);
-  if(!items.length) return;
-  if(!forceFirst && items.includes(current)) product.value = current;
-  else product.selectedIndex = 0;
-}
-
-function renderQuickProducts(forceFirst=false){
-  const q = quickQuarry.value || Object.keys(priceData)[0];
-  const current = quickProduct.value;
-  const items = Object.keys(priceData[q].products);
-  quickProduct.innerHTML = "";
-  items.forEach(x => quickProduct.innerHTML += `<option value="${x}">${x}</option>`);
-  if(!items.length) return;
-  if(!forceFirst && items.includes(current)) quickProduct.value = current;
-  else quickProduct.selectedIndex = 0;
-}
-
-function renderClientChoices(){
-  const current = savedClient.value;
-  savedClient.innerHTML = '<option value="">-- wybierz klienta --</option>';
-  clients.forEach(c => {
-    savedClient.innerHTML += `<option value="${c.id}">${c.name} | ${c.address || ""}</option>`;
-  });
-  if ([...savedClient.options].some(o => o.value === current)) savedClient.value = current;
-}
-
-function useClientForCalc(){
-  const id = Number(savedClient.value);
-  if(!id) return;
-  const c = clients.find(x => x.id === id);
-  if(!c) return;
-  clientName.value = c.name || "";
-  clientPhone.value = c.phone || "";
-  deliveryAddress.value = c.address || "";
-}
-
+let clients = JSON.parse(localStorage.getItem("clients_v21b") || "null") || [{id:Date.now()+1,name:"Amper",phone:"45262737373",address:"Oświęcim",segment:"B",stage:"Stały klient",nextContact:"",notes:""}];
+let priceData = JSON.parse(localStorage.getItem("priceData_v21b") || "null") || defaultData;
+let quotes = JSON.parse(localStorage.getItem("quotes_v21b") || "[]");
+function persistClients(){ localStorage.setItem("clients_v21b", JSON.stringify(clients)); }
+function persistPrices(){ localStorage.setItem("priceData_v21b", JSON.stringify(priceData)); }
+function persistQuotes(){ localStorage.setItem("quotes_v21b", JSON.stringify(quotes)); }
+function show(id){ document.querySelectorAll(".card").forEach(c=>c.classList.add("hidden")); if(id==="clients"){ document.getElementById("clients").classList.remove("hidden"); document.getElementById("clientsListCard").classList.remove("hidden"); } else { document.getElementById(id).classList.remove("hidden"); } if(id==="history") renderHistory(); if(id==="prices") renderPriceEditor(); if(id==="clients") renderClients(); }
+function fillSelectors(){ quarry.innerHTML=""; quickQuarry.innerHTML=""; priceQuarry.innerHTML=""; historyQuarryFilter.innerHTML='<option value="">Wszystkie kopalnie</option>'; Object.keys(priceData).forEach(q=>{ quarry.innerHTML += `<option value="${q}">${q}</option>`; quickQuarry.innerHTML += `<option value="${q}">${q}</option>`; priceQuarry.innerHTML += `<option value="${q}">${q}</option>`; historyQuarryFilter.innerHTML += `<option value="${q}">${q}</option>`; }); renderProducts(true); renderQuickProducts(true); renderClientChoices(); }
+function renderProducts(forceFirst=false){ const q=quarry.value||Object.keys(priceData)[0], current=product.value, items=Object.keys(priceData[q].products); product.innerHTML=""; items.forEach(x=>product.innerHTML += `<option value="${x}">${x}</option>`); if(!items.length) return; if(!forceFirst&&items.includes(current)) product.value=current; else product.selectedIndex=0; }
+function renderQuickProducts(forceFirst=false){ const q=quickQuarry.value||Object.keys(priceData)[0], current=quickProduct.value, items=Object.keys(priceData[q].products); quickProduct.innerHTML=""; items.forEach(x=>quickProduct.innerHTML += `<option value="${x}">${x}</option>`); if(!items.length) return; if(!forceFirst&&items.includes(current)) quickProduct.value=current; else quickProduct.selectedIndex=0; }
+function renderClientChoices(){ const current=savedClient.value; savedClient.innerHTML='<option value="">-- wybierz klienta --</option>'; clients.forEach(c=>savedClient.innerHTML += `<option value="${c.id}">${c.name} | ${c.address||""}</option>`); if([...savedClient.options].some(o=>o.value===current)) savedClient.value=current; }
+function useClientForCalc(){ const id=Number(savedClient.value); if(!id) return; const c=clients.find(x=>x.id===id); if(!c) return; clientName.value=c.name||""; clientPhone.value=c.phone||""; deliveryAddress.value=c.address||""; }
 function onQuarryChange(){ renderProducts(true); syncPrice(); }
 function onQuickQuarryChange(){ renderQuickProducts(true); syncQuickPrice(); }
-
-function syncPrice(){
-  const q = quarry.value, p = product.value;
-  if(priceData[q] && priceData[q].products[p] !== undefined){
-    price.value = priceData[q].products[p];
-    rate.value = priceData[q].rate;
-  }
-}
-
-function syncQuickPrice(){
-  const q = quickQuarry.value, p = quickProduct.value;
-  if(priceData[q] && priceData[q].products[p] !== undefined){
-    quickPrice.value = priceData[q].products[p];
-    quickRate.value = priceData[q].rate;
-  }
-}
-
-function calcCore(priceVal, kmVal, rateVal, loadVal, marginVal, qtyVal){
-  const course = kmVal * rateVal * 2;
-  const transport = course / Math.max(loadVal,1);
-  const final = priceVal + transport + marginVal;
-  const value = final * qtyVal;
-  return {course, transport, final, value};
-}
-
-function calcQuick(){
-  const p = Number(quickPrice.value || 0);
-  const k = Number(quickKm.value || 0);
-  const r = Number(quickRate.value || 0);
-  const l = Number(quickLoad.value || 1);
-  const m = Number(quickMargin.value || 0);
-  const q = Number(quickQty.value || 0);
-  const res = calcCore(p,k,r,l,m,q);
-  quickResult.innerHTML = `Cena końcowa: ${res.final.toFixed(2)} zł/t<br>Wartość zamówienia: ${res.value.toFixed(2)} zł`;
-}
-
-function calc(){
-  const p = Number(price.value || 0), k = Number(km.value || 0), r = Number(rate.value || 0),
-        l = Number(load.value || 1), m = Number(margin.value || 0), q = Number(qty.value || 0);
-  const res = calcCore(p,k,r,l,m,q);
-  result.innerHTML = `Cena końcowa: ${res.final.toFixed(2)} zł/t<br>Wartość zamówienia: ${res.value.toFixed(2)} zł`;
-  const txt = [
-    "Oferta kruszywa",
-    `Kopalnia: ${quarry.value}`,
-    `Towar: ${product.value}`,
-    `Cena na kopalni: ${p.toFixed(2)} zł/t`,
-    `Transport: ${res.transport.toFixed(2)} zł/t`,
-    `Cena końcowa: ${res.final.toFixed(2)} zł/t`,
-    `Ilość: ${q} t`,
-    `Wartość: ${res.value.toFixed(2)} zł`,
-    clientName.value ? `Klient: ${clientName.value}` : "",
-    clientPhone.value ? `Telefon: ${clientPhone.value}` : "",
-    deliveryAddress.value ? `Adres dostawy: ${deliveryAddress.value}` : ""
-  ].filter(Boolean).join("\n");
-  offerBox.value = txt;
-  offerInfo.textContent = "SMS i WhatsApp możesz uzupełnić ręcznie numerem telefonu.";
-  return {final: res.final, value: res.value, offer: txt};
-}
-
-function saveQuote(){
-  const res = calc();
-  quotes.unshift({
-    id: Date.now(),
-    date: new Date().toLocaleString("pl-PL"),
-    timestamp: Date.now(),
-    quarry: quarry.value,
-    product: product.value,
-    final: res.final,
-    value: res.value,
-    client: clientName.value || "",
-    phone: clientPhone.value || "",
-    address: deliveryAddress.value || "",
-    offer: res.offer
-  });
-  persistQuotes();
-  renderHistory();
-}
-
-function renderHistory(){
-  const txt = (historyClientSearch.value || "").toLowerCase().trim();
-  const qf = historyQuarryFilter.value || "";
-  const sm = historySort.value || "newest";
-  let arr = quotes.filter(x => (!qf || x.quarry === qf) && (!txt || (`${x.client} ${x.phone} ${x.address}`.toLowerCase().includes(txt))));
-  arr.sort((a,b)=> sm==="oldest" ? a.timestamp-b.timestamp : b.timestamp-a.timestamp);
-  historyList.innerHTML = arr.length ? "" : '<div class="small">Brak wycen dla podanych filtrów.</div>';
-  arr.forEach(item=>{
-    const idx = quotes.findIndex(x => x.id === item.id);
-    const div = document.createElement("div");
-    div.className = "quote";
-    div.innerHTML = `<b>${item.date}</b><br><span class="small">${item.quarry} | ${item.product}</span><br><span class="small">Cena końcowa: ${item.final.toFixed(2)} zł/t | Wartość: ${item.value.toFixed(2)} zł</span><br><span class="small">${item.client || ""} | ${item.phone || ""} | ${item.address || ""}</span><div class="client-actions"><button class="secondary" onclick="loadQuote(${idx})">Wczytaj</button><button class="secondary" onclick="deleteQuote(${idx})">Usuń</button></div>`;
-    historyList.appendChild(div);
-  });
-}
-
-function loadQuote(i){
-  const q = quotes[i];
-  if(!q) return;
-  quarry.value = q.quarry;
-  renderProducts(true);
-  if ([...product.options].some(o => o.value === q.product)) product.value = q.product;
-  syncPrice();
-  clientName.value = q.client || "";
-  clientPhone.value = q.phone || "";
-  deliveryAddress.value = q.address || "";
-  result.innerHTML = `Cena końcowa: ${q.final.toFixed(2)} zł/t<br>Wartość zamówienia: ${q.value.toFixed(2)} zł`;
-  offerBox.value = q.offer || "";
-  show('calc');
-}
-
+function syncPrice(){ const q=quarry.value,p=product.value; if(priceData[q]&&priceData[q].products[p]!==undefined){ price.value=priceData[q].products[p]; rate.value=priceData[q].rate; } }
+function syncQuickPrice(){ const q=quickQuarry.value,p=quickProduct.value; if(priceData[q]&&priceData[q].products[p]!==undefined){ quickPrice.value=priceData[q].products[p]; quickRate.value=priceData[q].rate; } }
+function calcCore(priceVal,kmVal,rateVal,loadVal,marginVal,qtyVal){ const course=kmVal*rateVal*2,transport=course/Math.max(loadVal,1),final=priceVal+transport+marginVal,value=final*qtyVal; return {course,transport,final,value}; }
+function calcQuick(){ const p=Number(quickPrice.value||0),k=Number(quickKm.value||0),r=Number(quickRate.value||0),l=Number(quickLoad.value||1),m=Number(quickMargin.value||0),q=Number(quickQty.value||0); const res=calcCore(p,k,r,l,m,q); quickResult.innerHTML=`Cena końcowa: ${res.final.toFixed(2)} zł/t<br>Wartość zamówienia: ${res.value.toFixed(2)} zł`; }
+function calc(){ const p=Number(price.value||0),k=Number(km.value||0),r=Number(rate.value||0),l=Number(load.value||1),m=Number(margin.value||0),q=Number(qty.value||0); const res=calcCore(p,k,r,l,m,q); result.innerHTML=`Cena końcowa: ${res.final.toFixed(2)} zł/t<br>Wartość zamówienia: ${res.value.toFixed(2)} zł`; const txt=["Oferta kruszywa",`Kopalnia: ${quarry.value}`,`Towar: ${product.value}`,`Cena na kopalni: ${p.toFixed(2)} zł/t`,`Transport: ${res.transport.toFixed(2)} zł/t`,`Cena końcowa: ${res.final.toFixed(2)} zł/t`,`Ilość: ${q} t`,`Wartość: ${res.value.toFixed(2)} zł`,clientName.value?`Klient: ${clientName.value}`:"",clientPhone.value?`Telefon: ${clientPhone.value}`:"",deliveryAddress.value?`Adres dostawy: ${deliveryAddress.value}`:""].filter(Boolean).join("\n"); offerBox.value=txt; offerInfo.textContent="SMS i WhatsApp możesz uzupełnić ręcznie numerem telefonu."; return {final:res.final,value:res.value,offer:txt}; }
+function saveQuote(){ const res=calc(); quotes.unshift({id:Date.now(),date:new Date().toLocaleString("pl-PL"),timestamp:Date.now(),quarry:quarry.value,product:product.value,final:res.final,value:res.value,client:clientName.value||"",phone:clientPhone.value||"",address:deliveryAddress.value||"",offer:res.offer}); persistQuotes(); renderHistory(); }
+function renderHistory(){ const txt=(historyClientSearch.value||"").toLowerCase().trim(), qf=historyQuarryFilter.value||"", sm=historySort.value||"newest"; let arr=quotes.filter(x=>(!qf||x.quarry===qf)&&(!txt||(`${x.client} ${x.phone} ${x.address}`.toLowerCase().includes(txt)))); arr.sort((a,b)=>sm==="oldest"?a.timestamp-b.timestamp:b.timestamp-a.timestamp); historyList.innerHTML=arr.length?"":'<div class="small">Brak wycen dla podanych filtrów.</div>'; arr.forEach(item=>{ const idx=quotes.findIndex(x=>x.id===item.id); const div=document.createElement("div"); div.className="quote"; div.innerHTML=`<b>${item.date}</b><br><span class="small">${item.quarry} | ${item.product}</span><br><span class="small">Cena końcowa: ${item.final.toFixed(2)} zł/t | Wartość: ${item.value.toFixed(2)} zł</span><br><span class="small">${item.client||""} | ${item.phone||""} | ${item.address||""}</span><div class="client-actions"><button class="secondary" onclick="loadQuote(${idx})">Wczytaj</button><button class="secondary" onclick="deleteQuote(${idx})">Usuń</button></div>`; historyList.appendChild(div); }); }
+function loadQuote(i){ const q=quotes[i]; if(!q) return; quarry.value=q.quarry; renderProducts(true); if([...product.options].some(o=>o.value===q.product)) product.value=q.product; syncPrice(); clientName.value=q.client||""; clientPhone.value=q.phone||""; deliveryAddress.value=q.address||""; result.innerHTML=`Cena końcowa: ${q.final.toFixed(2)} zł/t<br>Wartość zamówienia: ${q.value.toFixed(2)} zł`; offerBox.value=q.offer||""; show('calc'); }
 function deleteQuote(i){ quotes.splice(i,1); persistQuotes(); renderHistory(); }
-
-function clearQuote(){
-  savedClient.value = "";
-  quarry.selectedIndex = 0;
-  renderProducts(true);
-  syncPrice();
-  km.value = 20;
-  load.value = 25;
-  margin.value = 3;
-  qty.value = 25;
-  clientName.value = "";
-  clientPhone.value = "";
-  deliveryAddress.value = "";
-  result.innerHTML = "";
-  offerBox.value = "";
-  offerInfo.textContent = "";
-}
-
-function saveClientForm(){
-  const editingId = editingClientId.value ? Number(editingClientId.value) : null;
-  const data = {
-    id: editingId || Date.now(),
-    name: cname.value.trim(),
-    phone: cphone.value.trim(),
-    address: caddress.value.trim(),
-    segment: csegment.value,
-    stage: cstage.value,
-    nextContact: cnext.value.trim(),
-    notes: cnotes.value.trim()
-  };
-  if(!data.name) return;
-  if(editingId){
-    const idx = clients.findIndex(c => c.id === editingId);
-    if(idx !== -1) clients[idx] = data;
-  } else {
-    clients.unshift(data);
-  }
-  persistClients();
-  resetClientForm();
-  renderClients();
-  renderClientChoices();
-}
-
-function resetClientForm(){
-  editingClientId.value = "";
-  cname.value = "";
-  cphone.value = "";
-  caddress.value = "";
-  cnotes.value = "";
-  cnext.value = "";
-  csegment.value = "B";
-  cstage.value = "Nowy lead";
-  saveClientBtn.textContent = "Dodaj klienta";
-}
-
-function editClient(i){
-  const c = clients[i];
-  if(!c) return;
-  editingClientId.value = c.id;
-  cname.value = c.name || "";
-  cphone.value = c.phone || "";
-  caddress.value = c.address || "";
-  csegment.value = c.segment || "B";
-  cstage.value = c.stage || "Nowy lead";
-  cnext.value = c.nextContact || "";
-  cnotes.value = c.notes || "";
-  saveClientBtn.textContent = "Zapisz zmiany";
-  show('clients');
-}
-
-function renderClients(){
-  const search = (clientSearch.value || "").toLowerCase().trim();
-  const seg = clientSegmentFilter.value || "";
-  let arr = clients.filter(c => {
-    const hay = `${c.name} ${c.phone} ${c.address}`.toLowerCase();
-    return (!search || hay.includes(search)) && (!seg || c.segment === seg);
-  });
-  clientsList.innerHTML = arr.length ? "" : '<div class="small">Brak klientów.</div>';
-  arr.forEach(c => {
-    const idx = clients.findIndex(x => x.id === c.id);
-    const div = document.createElement("div");
-    div.className = "client-row";
-    div.innerHTML = `<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><div style="font-size:26px;font-weight:800">${c.name}</div><span class="badge">${c.segment}</span></div><div class="small" style="font-size:18px;margin-top:4px">${c.phone || "-"} | ${c.address || "-"}</div><div class="small" style="font-size:18px">Etap: ${c.stage || "-"} | Następny kontakt: ${c.nextContact || "-"}</div><div class="client-actions"><button class="secondary" onclick="advanceClient(${idx})">Następny etap</button><button class="secondary" onclick="useClientDirect(${idx})">Do kalkulatora</button><button class="secondary" onclick="editClient(${idx})">Edytuj</button><button class="secondary" onclick="deleteClient(${idx})">Usuń</button></div>`;
-    clientsList.appendChild(div);
-  });
-}
-
-function advanceClient(i){
-  const stages = ["Nowy lead","Po kontakcie","Oferta wysłana","Stały klient"];
-  const c = clients[i];
-  const idx = stages.indexOf(c.stage || "Nowy lead");
-  c.stage = stages[Math.min(idx + 1, stages.length - 1)];
-  persistClients();
-  renderClients();
-}
-
-function useClientDirect(i){
-  const c = clients[i];
-  if(!c) return;
-  clientName.value = c.name || "";
-  clientPhone.value = c.phone || "";
-  deliveryAddress.value = c.address || "";
-  savedClient.value = String(c.id);
-  show('calc');
-}
-
-function deleteClient(i){
-  clients.splice(i,1);
-  persistClients();
-  renderClients();
-  renderClientChoices();
-}
-
+function clearQuote(){ savedClient.value=""; quarry.selectedIndex=0; renderProducts(true); syncPrice(); km.value=20; load.value=25; margin.value=3; qty.value=25; clientName.value=""; clientPhone.value=""; deliveryAddress.value=""; result.innerHTML=""; offerBox.value=""; offerInfo.textContent=""; }
+function saveClientForm(){ const editingId=editingClientId.value?Number(editingClientId.value):null; const data={id:editingId||Date.now(),name:cname.value.trim(),phone:cphone.value.trim(),address:caddress.value.trim(),segment:csegment.value,stage:cstage.value,nextContact:cnext.value.trim(),notes:cnotes.value.trim()}; if(!data.name) return; if(editingId){ const idx=clients.findIndex(c=>c.id===editingId); if(idx!==-1) clients[idx]=data; } else clients.unshift(data); persistClients(); resetClientForm(); renderClients(); renderClientChoices(); }
+function resetClientForm(){ editingClientId.value=""; cname.value=""; cphone.value=""; caddress.value=""; cnotes.value=""; cnext.value=""; csegment.value="B"; cstage.value="Nowy lead"; saveClientBtn.textContent="Dodaj klienta"; }
+function editClient(i){ const c=clients[i]; if(!c) return; editingClientId.value=c.id; cname.value=c.name||""; cphone.value=c.phone||""; caddress.value=c.address||""; csegment.value=c.segment||"B"; cstage.value=c.stage||"Nowy lead"; cnext.value=c.nextContact||""; cnotes.value=c.notes||""; saveClientBtn.textContent="Zapisz zmiany"; show('clients'); }
+function renderClients(){ const search=(clientSearch.value||"").toLowerCase().trim(), seg=clientSegmentFilter.value||""; let arr=clients.filter(c=>{ const hay=`${c.name} ${c.phone} ${c.address}`.toLowerCase(); return (!search||hay.includes(search))&&(!seg||c.segment===seg); }); clientsList.innerHTML=arr.length?"":'<div class="small">Brak klientów.</div>'; arr.forEach(c=>{ const idx=clients.findIndex(x=>x.id===c.id); const div=document.createElement("div"); div.className="client-row"; div.innerHTML=`<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><div style="font-size:26px;font-weight:800">${c.name}</div><span class="badge">${c.segment}</span></div><div class="small" style="font-size:18px;margin-top:4px">${c.phone||"-"} | ${c.address||"-"}</div><div class="small" style="font-size:18px">Etap: ${c.stage||"-"} | Następny kontakt: ${c.nextContact||"-"}</div><div class="client-actions"><button class="secondary" onclick="advanceClient(${idx})">Następny etap</button><button class="secondary" onclick="useClientDirect(${idx})">Do kalkulatora</button><button class="secondary" onclick="editClient(${idx})">Edytuj</button><button class="secondary" onclick="deleteClient(${idx})">Usuń</button></div>`; clientsList.appendChild(div); }); }
+function advanceClient(i){ const stages=["Nowy lead","Po kontakcie","Oferta wysłana","Stały klient"], c=clients[i], idx=stages.indexOf(c.stage||"Nowy lead"); c.stage=stages[Math.min(idx+1, stages.length-1)]; persistClients(); renderClients(); }
+function useClientDirect(i){ const c=clients[i]; if(!c) return; clientName.value=c.name||""; clientPhone.value=c.phone||""; deliveryAddress.value=c.address||""; savedClient.value=String(c.id); show('calc'); }
+function deleteClient(i){ clients.splice(i,1); persistClients(); renderClients(); renderClientChoices(); }
 function addTaskPlaceholder(){ alert("Przycisk zostawiony pod przyszły moduł zadań."); }
-
-function renderPriceEditor(){
-  const q = priceQuarry.value;
-  if(!q) return;
-  priceRate.value = priceData[q].rate;
-  let html = '<div class="grid4">';
-  Object.keys(priceData[q].products).forEach(name => {
-    const id = 'pp_' + btoa(unescape(encodeURIComponent(name))).replace(/=/g,'');
-    html += `<div><label>${name}</label><input id="${id}" type="number" value="${priceData[q].products[name]}"></div>`;
-  });
-  html += '</div>';
-  priceEditor.innerHTML = html;
-  window._fieldMap = {};
-  Object.keys(priceData[q].products).forEach(name => {
-    window._fieldMap[name] = 'pp_' + btoa(unescape(encodeURIComponent(name))).replace(/=/g,'');
-  });
-}
-
-function savePrices(){
-  const q = priceQuarry.value;
-  if(!q) return;
-  priceData[q].rate = Number(priceRate.value || 0);
-  Object.keys(priceData[q].products).forEach(name => {
-    priceData[q].products[name] = Number(document.getElementById(window._fieldMap[name]).value || 0);
-  });
-  persistPrices();
-  syncPrice();
-  syncQuickPrice();
-  alert("Cennik zapisany");
-}
-
-function resetPrices(){
-  priceData = JSON.parse(JSON.stringify(defaultData));
-  persistPrices();
-  fillSelectors();
-  renderPriceEditor();
-  syncPrice();
-  syncQuickPrice();
-  alert("Przywrócono domyślny cennik");
-}
-
-function exportPrices(){
-  const blob = new Blob([JSON.stringify(priceData, null, 2)], {type:"application/json"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "cennik_kruszywa.json";
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function importPrices(){
-  const file = importFile.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    try{
-      priceData = JSON.parse(e.target.result);
-      persistPrices();
-      fillSelectors();
-      renderPriceEditor();
-      syncPrice();
-      syncQuickPrice();
-      alert("Cennik wczytany");
-    }catch{
-      alert("Nie udało się wczytać pliku cennika");
-    }
-  };
-  reader.readAsText(file);
-}
-
-function copyOffer(){ navigator.clipboard.writeText(offerBox.value || ""); }
-function printOffer(){
-  if(!offerBox.value) return alert("Najpierw policz ofertę.");
-  const w = window.open("", "_blank");
-  const safe = offerBox.value.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>");
-  w.document.write(`<html><head><title>Oferta</title><style>body{font-family:Arial;padding:24px;line-height:1.6}</style></head><body><h2>Oferta kruszywa</h2><div>${safe}</div></body></html>`);
-  w.document.close();
-  setTimeout(()=>w.print(),300);
-}
-
-fillSelectors();
-renderClients();
-renderHistory();
-syncPrice();
-syncQuickPrice();
-show('quick');
-if ('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js'); }
+function renderPriceEditor(){ const q=priceQuarry.value; if(!q) return; priceRate.value=priceData[q].rate; let html='<div class="grid4">'; Object.keys(priceData[q].products).forEach(name=>{ const id='pp_'+btoa(unescape(encodeURIComponent(name))).replace(/=/g,''); html += `<div><label>${name}</label><input id="${id}" type="number" value="${priceData[q].products[name]}"></div>`; }); html += '</div>'; priceEditor.innerHTML=html; window._fieldMap={}; Object.keys(priceData[q].products).forEach(name=>window._fieldMap[name]='pp_'+btoa(unescape(encodeURIComponent(name))).replace(/=/g,'')); }
+function savePrices(){ const q=priceQuarry.value; if(!q) return; priceData[q].rate=Number(priceRate.value||0); Object.keys(priceData[q].products).forEach(name=>priceData[q].products[name]=Number(document.getElementById(window._fieldMap[name]).value||0)); persistPrices(); syncPrice(); syncQuickPrice(); alert("Cennik zapisany"); }
+function resetPrices(){ priceData=JSON.parse(JSON.stringify(defaultData)); persistPrices(); fillSelectors(); renderPriceEditor(); syncPrice(); syncQuickPrice(); alert("Przywrócono domyślny cennik"); }
+function exportPrices(){ const blob=new Blob([JSON.stringify(priceData,null,2)],{type:"application/json"}), url=URL.createObjectURL(blob), a=document.createElement("a"); a.href=url; a.download="cennik_kruszywa.json"; a.click(); URL.revokeObjectURL(url); }
+function importPrices(){ const file=importFile.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=e=>{ try{ priceData=JSON.parse(e.target.result); persistPrices(); fillSelectors(); renderPriceEditor(); syncPrice(); syncQuickPrice(); alert("Cennik wczytany"); } catch{ alert("Nie udało się wczytać pliku cennika"); } }; reader.readAsText(file); }
+function copyOffer(){ navigator.clipboard.writeText(offerBox.value||""); }
+function printOffer(){ if(!offerBox.value) return alert("Najpierw policz ofertę."); const w=window.open("", "_blank"), safe=offerBox.value.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\n/g,"<br>"); w.document.write(`<html><head><title>Oferta</title><style>body{font-family:Arial;padding:24px;line-height:1.6}</style></head><body><h2>Oferta kruszywa</h2><div>${safe}</div></body></html>`); w.document.close(); setTimeout(()=>w.print(),300); }
+fillSelectors(); renderClients(); renderHistory(); syncPrice(); syncQuickPrice(); show('quick');
+if ('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js?v=21b'); }
 </script>
 </body>
 </html>
